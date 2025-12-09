@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-outfit);
+  --color-neon-purple: #9d4edd;
+  --color-neon-blue: #00b4d8;
+  --color-dark-bg: #050510;
+}
+
+:root {
+  --background: #050510;
+  --foreground: #ffffff;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Utilities for Glow Effects */
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
+  }
+  .box-glow {
+    box-shadow: 0 0 30px rgba(157, 78, 221, 0.3);
+  }
+}
