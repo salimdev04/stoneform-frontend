@@ -13,7 +13,7 @@ export default function Navbar() {
         <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-8 py-4 sm:py-6 max-w-[2000px] mx-auto">
             <Link href={"/"} className="flex items-center gap-2">
                 <Image
-                    src="/logo-2.png"
+                    src="/StoneformLogo.png"
                     alt="StoneForm"
                     width={100}
                     height={100}

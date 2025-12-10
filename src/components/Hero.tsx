@@ -15,51 +15,83 @@ export default function Hero() {
         { label: "Withdraw Funds", href: "#" },
         { label: "Transaction History", href: "#" },
         { label: "Account Settings", href: "#" },
-        { label: "Logout", href: "#" }, // Or handle logout logic
     ];
 
     return (
         <section className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden">
             {/* Background */}
+            {/* Background */}
             <div className="absolute inset-0 z-0">
                 {
                     isDashboard ? (
-                        <Image
-                            src="/bg-dashboard-image.png"
-                            alt="Dashboard Background"
-                            className="object-cover bg-bottom blur-[0.5px]"
-                            fill
-                            objectFit="cover"
-                            priority
-                        />
+                        <>
+                            {/* Mobile Dashboard Background */}
+                            <div className="block md:hidden w-full h-full relative">
+                                <Image
+                                    src="/StoneformIPPhoneView.png"
+                                    alt="Dashboard Mobile Background"
+                                    className="object-cover"
+                                    fill
+                                    quality={100}
+                                    priority
+                                />
+                            </div>
+                            {/* Desktop Dashboard Background */}
+                            <div className="hidden md:block w-full h-full relative">
+                                <Image
+                                    src="/StoneformIPBackground.png"
+                                    alt="Dashboard Desktop Background"
+                                    className="object-cover"
+                                    fill
+                                    quality={100}
+                                    priority
+                                />
+                            </div>
+                        </>
                     ) : (
-                        <Image
-                            src="/bg-image-2.svg"
-                            alt="Hero Background"
-                            className="object-cover bg-bottom blur-[0.5px]"
-                            fill
-                            objectFit="cover"
-                            priority
-                        />
+                        <>
+                            {/* Mobile Hero Background */}
+                            <div className="block md:hidden w-full h-full relative">
+                                <Image
+                                    src="/StoneformLPPhoneView.png"
+                                    alt="Hero Mobile Background"
+                                    className="object-cover"
+                                    fill
+                                    quality={100}
+                                    priority
+                                />
+                            </div>
+                            {/* Desktop Hero Background */}
+                            <div className="hidden md:block w-full h-full relative">
+                                <Image
+                                    src="/StoneformLPBackground.png"
+                                    alt="Hero Desktop Background"
+                                    className="object-cover"
+                                    fill
+                                    quality={100}
+                                    priority
+                                />
+                            </div>
+                        </>
                     )
                 }
             </div>
 
-            <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 w-full max-w-7xl mx-auto mt-[-50px]">
-                <div className="flex items-center justify-center gap-1 sm:gap-4 mb-16 select-none animate-fade-in-up">
-                    <Image src="/stoneform-logo.svg" alt="Stoneform" width={800} height={150} />
+            <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 w-full mx-auto md:mt-[150px]">
+                <div className="flex items-center justify-center gap-1 sm:gap-4 mb-4 select-none animate-fade-in-up">
+                    <Image src="/stoneform-logo.svg" alt="Stoneform" width={830} height={160} />
                 </div>
 
                 {isDashboard ? (
-                    <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-4 mt-8 w-full max-w-4xl px-4">
+                    <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-4 mt-16 w-full max-w-4xl lg:max-w-none px-4">
                         {dashboardButtons.map((btn) => (
-                            <Button key={btn.label} className="text-base sm:text-lg px-6 py-3">
+                            <Button key={btn.label} className="text-base sm:text-lg">
                                 <Link href={btn.href}>{btn.label}</Link>
                             </Button>
                         ))}
                     </div>
                 ) : (
-                    <Button className="text-xl !text-red sm:text-2xl px-12 py-6 mt-8">
+                    <Button className="text-2xl px-14 py-3 md:mt-24 mt-12">
                         <Link href="/dashboard">Invest Now</Link>
                     </Button>
                 )}
