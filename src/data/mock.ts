@@ -1,0 +1,137 @@
+export const userProfile = {
+    name: "Alex Investor",
+    email: "alex.investor@example.com",
+    avatar: "/avatars/alex.png",
+    kycStatus: "verified", // verified, pending, rejected
+    walletAddress: "0x1234...5678",
+};
+
+export const dashboardStats = {
+    totalBalance: "$124,500.00",
+    totalProfit: "$12,450.00",
+    profitPercentage: "11.2%",
+    activeProjects: 3,
+    pendingPayouts: "$450.00",
+};
+
+export const recentTransactions = [
+    {
+        id: "tx-001",
+        type: "Deposit",
+        amount: "$5,000.00",
+        date: "2024-03-15",
+        status: "Completed",
+        asset: "USDC",
+    },
+    {
+        id: "tx-002",
+        type: "Investment",
+        amount: "$10,000.00",
+        date: "2024-03-10",
+        status: "Completed",
+        asset: "Luxury Villa in Bali",
+    },
+    {
+        id: "tx-003",
+        type: "Payout",
+        amount: "$350.00",
+        date: "2024-03-01",
+        status: "Completed",
+        asset: "Dubai Marina Apartment",
+    },
+    {
+        id: "tx-004",
+        type: "Withdrawal",
+        amount: "$1,000.00",
+        date: "2024-02-28",
+        status: "Pending",
+        asset: "USDC",
+    },
+];
+
+export const portfolio = [
+    {
+        id: "inv-001",
+        projectName: "Luxury Villa in Bali",
+        location: "Bali, Indonesia",
+        investedAmount: "$50,000.00",
+        currentValue: "$55,000.00",
+        roi: "+10%",
+        status: "Active",
+        image: "/mock-image.png",
+        nextPayoutDate: "2024-04-01",
+    },
+    {
+        id: "inv-002",
+        projectName: "Dubai Marina Apartment",
+        location: "Dubai, UAE",
+        investedAmount: "$70,000.00",
+        currentValue: "$72,100.00",
+        roi: "+3%",
+        status: "Active",
+        image: "/mock-image.png",
+        nextPayoutDate: "2024-04-15",
+    },
+    {
+        id: "inv-003",
+        projectName: "London Penthouse",
+        location: "London, UK",
+        investedAmount: "$4,500.00",
+        currentValue: "$4,500.00",
+        roi: "0%",
+        status: "Funding",
+        image: "/mock-image.png",
+        nextPayoutDate: "TBD",
+    },
+];
+
+export const availableInvestments = [
+    {
+        id: "prop-001",
+        title: "Modern Loft in NYC",
+        location: "New York, NY",
+        targetReturn: "12-15%",
+        minInvestment: "$1,000",
+        fundingProgress: 75,
+        totalFunding: "$2,000,000",
+        image: "/mock-image.png",
+        tags: ["Residential", "High Yield"],
+        description: "A stunning modern loft in the heart of Tribeca. High ceilings, exposed brick, and luxury finishes.",
+    },
+    {
+        id: "prop-002",
+        title: "Eco Resort",
+        location: "Tulum, Mexico",
+        targetReturn: "18-20%",
+        minInvestment: "$5,000",
+        fundingProgress: 40,
+        totalFunding: "$5,000,000",
+        image: "/mock-image.png",
+        tags: ["Hospitality", "Eco-friendly"],
+        description: "Sustainable luxury eco-resort surrounded by jungle and cenotes.",
+    },
+    {
+        id: "prop-003",
+        title: "Commercial Hub",
+        location: "Berlin, Germany",
+        targetReturn: "8-10%",
+        minInvestment: "$2,500",
+        fundingProgress: 90,
+        totalFunding: "$10,000,000",
+        image: "/mock-image.png",
+        tags: ["Commercial", "Stable"],
+        description: "Prime commercial real estate in Berlin's tech district.",
+    },
+    {
+        id: "prop-004",
+        title: "Beachfront Condo",
+        location: "Miami, FL",
+        targetReturn: "10-12%",
+        minInvestment: "$1,000",
+        fundingProgress: 15,
+        totalFunding: "$3,500,000",
+        image: "/mock-image.png",
+        tags: ["Residential", "Vacation Rental"],
+        description: "High-end condo with direct ocean views and private beach access.",
+    },
+];

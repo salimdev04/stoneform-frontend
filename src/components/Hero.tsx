@@ -3,18 +3,31 @@
 import Image from "next/image";
 import Button from "./Button";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAccount } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 export default function Hero() {
     const pathname = usePathname();
+    const router = useRouter();
     const isDashboard = pathname === "/dashboard";
+    const { isConnected } = useAccount();
+    const { openConnectModal } = useConnectModal();
+
+    const handleInvestNow = () => {
+        if (isConnected) {
+            router.push("/dashboard");
+        } else {
+            openConnectModal?.();
+        }
+    };
 
     const dashboardButtons = [
-        { label: "View Portfolio", href: "#" },
-        { label: "Invest", href: "#" },
-        { label: "Withdraw Funds", href: "#" },
-        { label: "Transaction History", href: "#" },
-        { label: "Account Settings", href: "#" },
+        { label: "View Portfolio", href: "/portfolio" },
+        { label: "Invest", href: "/invest" },
+        { label: "Withdraw Funds", href: "/portfolio" },
+        { label: "Transaction History", href: "/transactions" },
+        { label: "Account Settings", href: "/settings" },
     ];
 
     return (
@@ -91,8 +104,11 @@ export default function Hero() {
                         ))}
                     </div>
                 ) : (
-                    <Button className="text-2xl px-14 py-3 md:mt-24 mt-12">
-                        <Link href="/dashboard">Invest Now</Link>
+                    <Button
+                        onClick={handleInvestNow}
+                        className="text-2xl px-14 py-3 md:mt-24 mt-12"
+                    >
+                        Invest Now
                     </Button>
                 )}
             </div>
