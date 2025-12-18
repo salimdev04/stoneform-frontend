@@ -9,7 +9,11 @@ import { dashboardStats, recentTransactions } from '../data/mock';
 import Link from 'next/link';
 import { ArrowRight, DollarSign, TrendingUp, Building } from 'lucide-react';
 
+import { useAccount } from 'wagmi';
+
 const Dashboard: NextPage = () => {
+    const { address, isConnected } = useAccount();
+
     return (
         <DashboardLayout>
             <Head>
@@ -21,7 +25,7 @@ const Dashboard: NextPage = () => {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold text-white">Overview</h1>
-                        <p className="text-gray-400 mt-1">Welcome back, Alex! Here&apos;s what&apos;s happening with your portfolio.</p>
+                        <p className="text-gray-400 mt-1">Welcome back, {isConnected && address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Guest"}! Here&apos;s what&apos;s happening with your portfolio.</p>
                     </div>
                     <Link
                         href="/invest"

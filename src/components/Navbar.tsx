@@ -23,11 +23,7 @@ export default function Navbar() {
         }
     };
 
-    // Watch for connection status changes to auto-redirect only if user intended to explore/invest
-    // Note: We avoid auto-redirect purely on mount unless we have a specific intent state, 
-    // but for this simple landing page flow, we can leave it manual or add intent state if needed.
-    // user requested "pop up wallet connexion so user can connect BEFORE going to dashboard page"
-    // so we handle the click, wait for connection, then redirect.
+
 
     useEffect(() => {
         if (isConnected && pathname === "/") {

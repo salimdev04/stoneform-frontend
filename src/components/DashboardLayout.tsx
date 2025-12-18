@@ -13,7 +13,7 @@ import {
     LogOut,
     User
 } from "lucide-react";
-import Button from "./Button";
+import { useAccount, useDisconnect } from "wagmi";
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -22,6 +22,8 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { address, isConnected } = useAccount();
+    const { disconnect } = useDisconnect();
 
     const navigation = [
         { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -32,6 +34,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     ];
 
     const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
+    const handleLogout = () => {
+        disconnect();
+        router.push("/");
+    };
+
+    const formatAddress = (addr: string | undefined) => {
+        if (!addr) return "Not Connected";
+        return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+    };
 
     return (
         <div className="min-h-screen bg-stone-dark flex">
@@ -57,8 +69,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                 key={item.name}
                                 href={item.href}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 ${isActive
-                                        ? "bg-stone-violet/20 text-stone-purple font-semibold"
-                                        : "text-gray-400 hover:bg-white/5 hover:text-white"
+                                    ? "bg-stone-violet/20 text-stone-purple font-semibold"
+                                    : "text-gray-400 hover:bg-white/5 hover:text-white"
                                     }`}
                             >
                                 <item.icon size={20} />
@@ -69,7 +81,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </nav>
 
                 <div className="p-4 border-t border-white/5">
-                    <button className="flex items-center gap-3 px-4 py-3 w-full text-gray-400 hover:text-red-400 transition-colors rounded-xl hover:bg-white/5">
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 px-4 py-3 w-full text-gray-400 hover:text-red-400 transition-colors rounded-xl hover:bg-white/5"
+                    >
                         <LogOut size={20} />
                         <span>Logout</span>
                     </button>
@@ -78,8 +93,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                             <User size={20} />
                         </div>
                         <div className="overflow-hidden">
-                            <p className="text-sm font-semibold text-white truncate">Investor</p>
-                            <p className="text-xs text-gray-400 truncate">investor@example.com</p>
+                            <p className="text-sm font-semibold text-white truncate">
+                                {isConnected ? formatAddress(address) : "Guest"}
+                            </p>
+                            <p className="text-xs text-gray-400 truncate">
+                                {isConnected ? "Connected via Wallet" : "Not Connected"}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -119,8 +138,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                 href={item.href}
                                 onClick={() => setSidebarOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 ${isActive
-                                        ? "bg-stone-violet/20 text-stone-purple font-semibold"
-                                        : "text-gray-400 hover:bg-white/5 hover:text-white"
+                                    ? "bg-stone-violet/20 text-stone-purple font-semibold"
+                                    : "text-gray-400 hover:bg-white/5 hover:text-white"
                                     }`}
                             >
                                 <item.icon size={20} />
@@ -129,6 +148,28 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                         );
                     })}
                 </nav>
+                <div className="p-4 border-t border-white/5">
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 px-4 py-3 w-full text-gray-400 hover:text-red-400 transition-colors rounded-xl hover:bg-white/5"
+                    >
+                        <LogOut size={20} />
+                        <span>Logout</span>
+                    </button>
+                    <div className="mt-4 flex items-center gap-3 px-4">
+                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-gray-400">
+                            <User size={20} />
+                        </div>
+                        <div className="overflow-hidden">
+                            <p className="text-sm font-semibold text-white truncate">
+                                {isConnected ? formatAddress(address) : "Guest"}
+                            </p>
+                            <p className="text-xs text-gray-400 truncate">
+                                {isConnected ? "Connected via Wallet" : "Not Connected"}
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Main Content */}

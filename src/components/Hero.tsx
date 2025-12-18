@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useEffect } from "react";
 
 export default function Hero() {
     const pathname = usePathname();
@@ -21,6 +22,12 @@ export default function Hero() {
             openConnectModal?.();
         }
     };
+
+    useEffect(() => {
+        if (isConnected && pathname === "/") {
+            router.push("/dashboard");
+        }
+    }, [isConnected, pathname, router]);
 
     const dashboardButtons = [
         { label: "View Portfolio", href: "/portfolio" },
