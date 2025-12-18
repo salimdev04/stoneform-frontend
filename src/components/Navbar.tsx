@@ -31,11 +31,7 @@ export default function Navbar() {
 
     useEffect(() => {
         if (isConnected && pathname === "/") {
-            // Optional: You might want to auto-redirect if they connect while on home page
-            // check if we should do this. For now let's keep it manual click based or simple redirect
-            // If the user *just* connected via the modal we opened, they probably want to go to dashboard.
-
-            // Simplest approach: if connected on home, allow them to stay, but the buttons will now take them to dashboard immediately.
+            router.push("/dashboard");
         }
     }, [isConnected, pathname, router]);
 
