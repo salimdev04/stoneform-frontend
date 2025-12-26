@@ -62,7 +62,7 @@ const Invest = () => {
                     {!isConnected ? (
                         <button
                             onClick={openConnectModal}
-                            className="bg-stone-cyan/10 hover:bg-stone-cyan/20 text-stone-cyan border border-stone-cyan/20 py-2 rounded-xl font-bold transition-all flex items-center gap-2"
+                            className="bg-stone-cyan/10 hover:bg-stone-cyan/20 text-stone-cyan border border-stone-cyan/20 py-2 px-4 rounded-xl font-bold transition-all flex items-center gap-2"
                         >
                             <Wallet className="w-4 h-4" />
                             Connect Wallet
