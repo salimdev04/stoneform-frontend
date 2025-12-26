@@ -26,7 +26,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const { disconnect } = useDisconnect();
 
     const navigation = [
-        { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+        { name: "Dashboard", href: "/invest", icon: LayoutDashboard },
         { name: "Invest", href: "/invest", icon: TrendingUp },
         { name: "Portfolio", href: "/portfolio", icon: PieChart },
         { name: "Transactions", href: "/transactions", icon: History },
@@ -116,7 +116,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className={`fixed inset-y-0 left-0 w-64 bg-[#000d4d] z-50 transform transition-transform duration-300 lg:hidden ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
                 }`}>
                 <div className="p-6 flex items-center justify-between">
-                    <Link href="/dashboard" onClick={() => setSidebarOpen(false)}>
+                    <Link href="/invest" onClick={() => setSidebarOpen(false)}>
                         <Image
                             src="/StoneformLogo.png"
                             alt="StoneForm"
@@ -179,7 +179,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     <button onClick={toggleSidebar} className="text-white">
                         <Menu size={24} />
                     </button>
-                    <Link href="/dashboard">
+                    <Link href="/invest">
                         <Image
                             src="/StoneformLogo.png"
                             alt="StoneForm"

@@ -1,56 +1,53 @@
 "use client";
 
-import Image from "next/image";
 import Button from "./Button";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useAccount } from "wagmi";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
-    const pathname = usePathname();
     const router = useRouter();
-    const isDashboard = pathname === "/dashboard";
-    const { isConnected } = useAccount();
-    const { openConnectModal } = useConnectModal();
+    const [isScrolled, setIsScrolled] = useState(false);
 
     const handleExplore = () => {
-        if (isConnected) {
-            router.push("/dashboard");
-        } else {
-            openConnectModal?.();
-        }
+        router.push("/invest");
     };
 
-
-
     useEffect(() => {
-        if (isConnected && pathname === "/") {
-            router.push("/dashboard");
-        }
-    }, [isConnected, pathname, router]);
+        const handleScroll = () => {
+            if (window.scrollY > 50) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-8 py-4 sm:py-6 max-w-[2000px] mx-auto">
+        <nav className={`fixed top-0 left-0 right-0 z-50 py-4 flex items-center justify-between px-4 sm:px-8 sm:py-6 max-w-[2000px] mx-auto transition-all duration-300 ${isScrolled ? 'backdrop-blur-md bg-stone-dark/80 shadow-lg' : 'bg-transparent'
+            }`}>
             <Link href={"/"} className="flex items-center gap-2">
-                <Image
-                    src="/StoneformLogo.png"
-                    alt="StoneForm"
-                    width={100}
-                    height={100}
-                    className="object-contain w-[60px] h-[60px] sm:w-[100px] sm:h-[100px]"
-                />
+                <div className="w-[60px] h-[60px] sm:w-[100px] sm:h-[100px] relative">
+                    <img
+                        src="/StoneformLogo.png"
+                        alt="StoneForm"
+                        className="w-full h-full object-contain"
+                    />
+                </div>
             </Link>
 
             <div className="flex items-center gap-2 sm:gap-4">
-                {!isDashboard && (
+                {isScrolled && (
                     <Button
                         variant="primary"
                         onClick={handleExplore}
-                        className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto sm:w-[160px] h-[40px] sm:h-[50px]"
+                        className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-[200px] h-[50px] sm:h-[60px]"
                     >
-                        Explore
+                        Invest Now
                     </Button>
                 )}
                 <Button variant="secondary" className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto sm:w-[160px] h-[40px] sm:h-[50px]">
