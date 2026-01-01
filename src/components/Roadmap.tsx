@@ -6,9 +6,9 @@ const steps = [
     {
         icon: <Rocket className="w-6 h-6 md:w-8 md:h-8 text-white" />,
         phase: "Phase 1",
-        time: "Q2–Q3 2025",
-        title: "Foundation",
-        description: "Presale, UK compliance, STOF deployment, $10M presale, first project launch (Dubai apartments).",
+        time: "Q1 - Q2 2026",
+        title: "Foundation & ICO Launch",
+        description: "Launch STOF ICO (presale and public sale). Complete initial fundraising targets. Establish core legal, compliance, and governance frameworks. Finalize smart contract architecture and security audits. Begin onboarding strategic advisors and early partners.",
         color: "bg-[#00c6ff]", // Light Blue
         glow: "shadow-[#00c6ff]/50",
         status: "current"
@@ -16,19 +16,19 @@ const steps = [
     {
         icon: <Target className="w-6 h-6 md:w-8 md:h-8 text-white" />,
         phase: "Phase 2",
-        time: "Q3–Q4 2025",
-        title: "Public Sale",
-        description: "Public sale + first acquisitions, $12M raise, STOF listing, $22M asset portfolio, staking + DAO.",
+        time: "Q3 - Q4 2026",
+        title: "Team Expansion & Partnerships",
+        description: "Expand internal team (real estate, blockchain, legal). Secure partnerships with property developers and ESG-certified builders. Strengthen compliance operations across key jurisdictions. Prepare pipeline for initial real estate acquisitions.",
         color: "bg-[#5832FF]", // Purple/Blue
         glow: "shadow-[#5832FF]/50",
         status: "upcoming"
     },
     {
-        icon: <Globe className="w-6 h-6 md:w-8 md:h-8 text-white" />,
+        icon: <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-white" />,
         phase: "Phase 3",
-        time: "Q1–Q4 2026",
-        title: "Global Expansion",
-        description: "Bangkok & Miami sites, DeFi integration, renovation & community governance.",
+        time: "Q1 - Q2 2027",
+        title: "First Project Launch",
+        description: "Secure permits and land rights for the inaugural residential project (e.g., London or Dubai). Initiate construction or acquisition process. Continue platform technical development. Prepare investor reporting and portfolio tracking infrastructure.",
         color: "bg-[#d946ef]", // Pink/Magenta
         glow: "shadow-[#d946ef]/50",
         status: "upcoming"
@@ -36,9 +36,9 @@ const steps = [
     {
         icon: <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-white" />,
         phase: "Phase 4",
-        time: "Q1–Q4 2027",
-        title: "Diversification",
-        description: "Singapore, 90% occupancy milestone, $6.5M dividends, income expansion.",
+        time: "Q3 2027 – Q1 2028",
+        title: "Scaling & DeFi Integration",
+        description: "Launch STOF staking mechanisms for early backers. Finalize DAO-based governance framework. Integrate DeFi functionalities (e.g. STOF-backed mechanisms). Deploy mobile application for portfolio monitoring. Begin acquisition of additional prime residential sites.",
         color: "bg-[#f43f5e]", // Red/Pink
         glow: "shadow-[#f43f5e]/50",
         status: "upcoming"
@@ -46,11 +46,21 @@ const steps = [
     {
         icon: <Award className="w-6 h-6 md:w-8 md:h-8 text-white" />,
         phase: "Phase 5",
-        time: "Q1–Q4 2028",
-        title: "Mature Ecosystem",
-        description: "London offices, hospitality tokens, ESG certifications, reach $200M managed portfolio.",
+        time: "Q1 2028 – Q4 2028",
+        title: "Income Generation & Global Expansion",
+        description: "Achieve high occupancy for completed projects. Initiate quarterly dividend distributions to STOF holders. Expand into new global markets (Asia, Europe). Establish local property management partnerships. Generate consistent rental income across portfolio.",
         color: "bg-[#f59e0b]", // Amber/Orange
         glow: "shadow-[#f59e0b]/50",
+        status: "upcoming"
+    },
+    {
+        icon: <Globe className="w-6 h-6 md:w-8 md:h-8 text-white" />,
+        phase: "Phase 6",
+        time: "2029 – 2030",
+        title: "Diversification & Ecosystem Maturity",
+        description: "Expand into commercial real estate and hospitality assets. Launch tokenized hospitality and mixed-use projects. Scale portfolio across 10+ countries. Introduce enhanced STOF governance features (v2.0). Position STONEFORM as a global leader in tokenized real estate investment.",
+        color: "bg-[#10b981]", // Emerald
+        glow: "shadow-[#10b981]/50",
         status: "upcoming"
     }
 ];
@@ -76,24 +86,25 @@ const Roadmap = () => {
 
             <div className="relative z-10 max-w-7xl mx-auto w-full">
                 <div className="text-center mb-20">
-                    <h2 className="text-4xl md:text-6xl font-bold mb-4 tracking-tight">
-                        <span className="text-gradient">Roadmap</span>
+                    <h2 className="text-4xl md:text-7xl font-bold mb-4 tracking-tight">
+                        <span className="text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]">Roadmap</span>
                     </h2>
                     <p className="text-lg text-gray-400 max-w-2xl mx-auto font-light">
-                        Our strategic path to revolutionizing real estate investment through blockchain technology.
+                        Our strategic path toward building a compliant, scalable, and globally accessible tokenized real estate ecosystem.
                     </p>
                 </div>
 
                 <div className="relative">
-                    {/* Desktop Connecting Line */}
+                    {/* Desktop Connecting Line - Hidden for multi-row layout
                     <div className="hidden lg:block absolute top-[60px] left-[10%] right-[10%] h-1 bg-gradient-to-r from-stone-cyan/20 via-stone-purple/20 to-stone-cyan/20 rounded-full -z-10">
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent w-1/2 animate-[shimmer_3s_infinite]"></div>
                     </div>
+                    */}
 
                     {/* Mobile Connecting Line */}
                     <div className="block lg:hidden absolute left-[28px] top-[60px] bottom-[60px] w-1 bg-white/10 -z-10"></div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8">
                         {steps.map((step, index) => (
                             <div key={index} className="flex lg:flex-col items-start lg:items-center group relative">
                                 {/* Icon Circle Container */}

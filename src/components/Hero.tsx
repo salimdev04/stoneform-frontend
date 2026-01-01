@@ -14,14 +14,6 @@ export default function Hero() {
         router.push("/invest");
     };
 
-    const dashboardButtons = [
-        { label: "View Portfolio", href: "/portfolio" },
-        { label: "Invest", href: "/invest" },
-        { label: "Withdraw Funds", href: "/portfolio" },
-        { label: "Transaction History", href: "/transactions" },
-        { label: "Account Settings", href: "/settings" },
-    ];
-
     return (
         <section className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden">
             {/* Background */}

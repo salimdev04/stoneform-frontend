@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { PieChart, TrendingUp, ShieldCheck, Users, Wallet, ArrowRight } from 'lucide-react';
 
 const Tokenomics = () => {
     const distribution = [
-        { label: 'Presale', percentage: 30, color: '#00c6ff', bg: 'bg-[#00c6ff]' },
-        { label: 'Team', percentage: 15, color: '#d946ef', bg: 'bg-[#d946ef]' },
-        { label: 'Reserve', percentage: 15, color: '#22c55e', bg: 'bg-[#22c55e]' },
-        { label: 'Liquidity', percentage: 20, color: '#8b5cf6', bg: 'bg-[#8b5cf6]' },
-        { label: 'Staking Rewards', percentage: 20, color: '#f97316', bg: 'bg-[#f97316]' },
+        { label: 'Token Sale', percentage: 50, color: '#00c6ff', bg: 'bg-[#00c6ff]' },
+        { label: 'Ecosystem Reserve', percentage: 25, color: '#22c55e', bg: 'bg-[#22c55e]' },
+        { label: 'Team & Advisors', percentage: 15, color: '#d946ef', bg: 'bg-[#d946ef]' },
+        { label: 'Marketing & Liquidity', percentage: 10, color: '#f97316', bg: 'bg-[#f97316]' },
     ];
 
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -24,17 +24,27 @@ const Tokenomics = () => {
     return (
         <section className="w-full min-h-screen py-24 px-4 md:px-8 bg-stone-dark text-white flex flex-col justify-center items-center relative overflow-hidden" id="tokenomics">
             {/* Background Elements */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0a0a2e] via-stone-dark to-stone-dark opacity-60 -z-10"></div>
+            <div className="absolute inset-0 z-0">
+                <Image
+                    src="/STONEFORMwebbgfinal3.png"
+                    alt="Tokenomics Background"
+                    fill
+                    className="object-cover opacity-40 mix-blend-soft-light"
+                    quality={100}
+                />
+                <div className="absolute inset-0 bg-stone-dark/60"></div>
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-stone-purple/10 via-stone-dark/80 to-stone-dark"></div>
+            </div>
             <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-stone-dark to-transparent pointer-events-none z-20"></div>
             <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-stone-dark to-transparent pointer-events-none z-20"></div>
 
             <div className="relative z-10 max-w-7xl mx-auto w-full">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-6xl font-bold mb-4 tracking-tight">
-                        <span className="text-gradient">Tokenomics</span>
+                    <h2 className="text-4xl md:text-7xl font-bold mb-4 tracking-tight">
+                        <span className="text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]">Tokenomics</span>
                     </h2>
                     <p className="text-lg text-gray-400 max-w-2xl mx-auto font-light">
-                        A robust economic model designed for sustainability, growth, and community rewards.
+                        A compliant, asset-backed economic model designed to support long-term growth, transparency, and investor participation.
                     </p>
                 </div>
 
@@ -159,6 +169,29 @@ const Tokenomics = () => {
 
                     {/* Right Side: Details */}
                     <div className="flex flex-col gap-6">
+                        {/* Token Overview */}
+                        <div className="glass-card rounded-2xl p-6 border border-white/5 bg-white/5 backdrop-blur-xl">
+                            <h3 className="text-lg font-semibold mb-4 text-stone-200">Token Overview</h3>
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p className="text-gray-400">Token Name</p>
+                                    <p className="font-semibold text-white">STONEFORM Token</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-400">Symbol</p>
+                                    <p className="font-semibold text-white">STOF</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-400">Blockchain</p>
+                                    <p className="font-semibold text-white">BSC (BSC-20)</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-400">Total Supply</p>
+                                    <p className="font-semibold text-white">1,000,000,000</p>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Legend */}
                         <div className="glass-card rounded-2xl p-6 border border-white/5 bg-white/5 backdrop-blur-xl">
                             <h3 className="text-lg font-semibold mb-4 text-stone-200">Distribution Breakdown</h3>
@@ -180,92 +213,100 @@ const Tokenomics = () => {
                             </div>
                         </div>
 
-                        {/* Token Utility */}
-                        <div className="glass-card rounded-2xl p-6 border border-white/5 bg-white/5 backdrop-blur-xl">
-                            <div className="flex items-center gap-2 mb-4">
-                                <ShieldCheck className="w-5 h-5 text-stone-cyan" />
-                                <h3 className="text-lg font-semibold text-stone-200">Token Utility</h3>
-                            </div>
-                            <ul className="space-y-3">
-                                {[
-                                    "Exclusive investment access to premium real estate",
-                                    "Governance voting rights on platform decisions",
-                                    "Staking rewards & priority dividend distribution"
-                                ].map((text, i) => (
-                                    <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-stone-cyan mt-1.5"></div>
-                                        {text}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
                     </div>
                 </div>
 
-                {/* Ecosystem Value Flow - Full Width */}
-                <div className="mt-12 w-full animate-fade-in-up">
-                    <div className="glass-card rounded-2xl p-8 border border-white/5 bg-white/5 backdrop-blur-xl">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 relative">
-
-                            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-stone-cyan/10 via-stone-cyan/30 to-stone-cyan/10 -z-10 hidden md:block"></div>
-
-                            {/* Title (Mobile Only) */}
-                            <div className="flex md:hidden items-center gap-2 mb-4 w-full">
-                                <TrendingUp className="w-5 h-5 text-stone-cyan" />
-                                <h3 className="text-lg font-semibold text-stone-200">Ecosystem Value Flow</h3>
-                            </div>
-
-                            {/* Title (Desktop - Absolute) */}
-                            <div className="hidden md:flex absolute -top-12 left-0 items-center gap-2">
-                                <TrendingUp className="w-5 h-5 text-stone-cyan" />
-                                <h3 className="text-lg font-semibold text-stone-200">Ecosystem Value Flow</h3>
-                            </div>
-
-                            {/* Step 1 */}
-                            <div className="flex flex-col items-center gap-3 group z-10 bg-stone-dark/80 p-4 rounded-xl border border-transparent hover:border-stone-cyan/30 transition-all duration-300">
-                                <div className="w-14 h-14 rounded-full bg-stone-dark border-2 border-stone-cyan/30 flex items-center justify-center group-hover:border-stone-cyan group-hover:shadow-[0_0_15px_rgba(0,198,255,0.3)] transition-all">
-                                    <PieChart className="w-6 h-6 text-stone-cyan" />
-                                </div>
-                                <span className="text-sm font-bold text-gray-200 tracking-wide">Real Estate Assets</span>
-                                <span className="text-xs text-gray-400 text-center max-w-[120px]">Premium global properties identified & acquired</span>
-                            </div>
-
-                            <ArrowRight className="w-6 h-6 text-stone-cyan/50 hidden md:block animate-pulse" />
-
-                            {/* Step 2 */}
-                            <div className="flex flex-col items-center gap-3 group z-10 bg-stone-dark/80 p-4 rounded-xl border border-transparent hover:border-stone-cyan/30 transition-all duration-300">
-                                <div className="w-14 h-14 rounded-full bg-stone-dark border-2 border-stone-cyan/30 flex items-center justify-center group-hover:border-stone-cyan group-hover:shadow-[0_0_15px_rgba(0,198,255,0.3)] transition-all">
-                                    <Wallet className="w-6 h-6 text-stone-cyan" />
-                                </div>
-                                <span className="text-sm font-bold text-gray-200 tracking-wide">Rental Income</span>
-                                <span className="text-xs text-gray-400 text-center max-w-[120px]">Revenue generated via tenants & appreciation</span>
-                            </div>
-
-                            <ArrowRight className="w-6 h-6 text-stone-cyan/50 hidden md:block animate-pulse" />
-
-                            {/* Step 3 */}
-                            <div className="flex flex-col items-center gap-3 group z-10 bg-stone-dark/80 p-4 rounded-xl border border-transparent hover:border-stone-cyan/30 transition-all duration-300">
-                                <div className="w-14 h-14 rounded-full bg-stone-dark border-2 border-stone-cyan/30 flex items-center justify-center group-hover:border-stone-cyan group-hover:shadow-[0_0_15px_rgba(0,198,255,0.3)] transition-all">
-                                    <ShieldCheck className="w-6 h-6 text-stone-cyan" />
-                                </div>
-                                <span className="text-sm font-bold text-gray-200 tracking-wide">Smart Contract</span>
-                                <span className="text-xs text-gray-400 text-center max-w-[120px]">Automated, transparent revenue distribution</span>
-                            </div>
-
-                            <ArrowRight className="w-6 h-6 text-stone-purple/50 hidden md:block animate-pulse" />
-
-                            {/* Step 4 */}
-                            <div className="flex flex-col items-center gap-3 group z-10 bg-stone-dark/80 p-4 rounded-xl border border-transparent hover:border-stone-purple/50 transition-all duration-300">
-                                <div className="w-14 h-14 rounded-full bg-stone-dark border-2 border-stone-purple/30 flex items-center justify-center group-hover:border-stone-purple group-hover:shadow-[0_0_15px_rgba(180,50,255,0.3)] transition-all">
-                                    <Users className="w-6 h-6 text-stone-purple" />
-                                </div>
-                                <span className="text-sm font-bold text-stone-purple tracking-wide">Token Holders</span>
-                                <span className="text-xs text-gray-400 text-center max-w-[120px]">Receive dividends, staking rewards & value growth</span>
-                            </div>
-
-                        </div>
+                {/* Token Utility */}
+                <div className="glass-card rounded-2xl p-6 border border-white/5 bg-white/5 backdrop-blur-xl mt-12">
+                    <div className="flex items-center gap-2 mb-4">
+                        <ShieldCheck className="w-5 h-5 text-stone-cyan" />
+                        <h3 className="text-lg font-semibold text-stone-200">Token Utility</h3>
                     </div>
+                    <ul className="space-y-3">
+                        {[
+                            "Gain fractional exposure to tokenized real estate assets",
+                            "Receive on-chain revenue distributions from rental income",
+                            "Participate in platform governance through voting rights",
+                            "Stake tokens for additional rewards and ecosystem incentives",
+                            "Access priority investment opportunities and benefits"
+                        ].map((text, i) => (
+                            <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
+                                <div className="w-1.5 h-1.5 rounded-full bg-stone-cyan mt-1.5 min-w-[6px]"></div>
+                                {text}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                {/* Detailed Sections: Sale, Vesting, Benefits */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 w-full animate-fade-in-up">
+
+                    {/* Token Sale Structure */}
+                    <div className="glass-card rounded-2xl p-6 border border-white/5 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-300">
+                        <div className="flex items-center gap-2 mb-4">
+                            <TrendingUp className="w-5 h-5 text-stone-purple" />
+                            <h3 className="text-lg font-semibold text-stone-200">Token Sale Structure</h3>
+                        </div>
+                        <ul className="space-y-3 text-sm text-gray-300">
+                            <li className="flex items-start gap-2">
+                                <div className="w-1 h-1 rounded-full bg-stone-purple mt-2"></div>
+                                <span><strong>5 Phases:</strong> Foundation, Seed, Private, Pre-Public, Public.</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <div className="w-1 h-1 rounded-full bg-stone-purple mt-2"></div>
+                                <span><strong>Pricing:</strong> Phase-based pricing with gradual increases.</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <div className="w-1 h-1 rounded-full bg-stone-purple mt-2"></div>
+                                <span><strong>Release:</strong> Controlled token release aligned with milestones.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Vesting & Release */}
+                    <div className="glass-card rounded-2xl p-6 border border-white/5 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-300">
+                        <div className="flex items-center gap-2 mb-4">
+                            <Wallet className="w-5 h-5 text-stone-cyan" />
+                            <h3 className="text-lg font-semibold text-stone-200">Vesting & Release</h3>
+                        </div>
+                        <ul className="space-y-3 text-sm text-gray-300">
+                            <li className="flex items-start gap-2">
+                                <div className="w-1 h-1 rounded-full bg-stone-cyan mt-2"></div>
+                                <span><strong>Team:</strong> 0% at TGE, 18-month linear vesting.</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <div className="w-1 h-1 rounded-full bg-stone-cyan mt-2"></div>
+                                <span><strong>Sale:</strong> Partial unlock at TGE, linear release thereafter.</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <div className="w-1 h-1 rounded-full bg-stone-cyan mt-2"></div>
+                                <span><strong>Reserve:</strong> Progressive release over 18 months for growth.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Why It Works */}
+                    <div className="glass-card rounded-2xl p-6 border border-white/5 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-300">
+                        <div className="flex items-center gap-2 mb-4">
+                            <ShieldCheck className="w-5 h-5 text-green-400" />
+                            <h3 className="text-lg font-semibold text-stone-200">Why It Works</h3>
+                        </div>
+                        <ul className="space-y-3 text-sm text-gray-300">
+                            <li className="flex items-start gap-2">
+                                <div className="w-1 h-1 rounded-full bg-green-400 mt-2"></div>
+                                <span>Backed by real-world income-generating assets.</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <div className="w-1 h-1 rounded-full bg-green-400 mt-2"></div>
+                                <span>Prevents speculation through strict vesting.</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <div className="w-1 h-1 rounded-full bg-green-400 mt-2"></div>
+                                <span>Aligns investors with long-term ecosystem growth.</span>
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </section>

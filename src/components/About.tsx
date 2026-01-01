@@ -17,11 +17,11 @@ const About = () => {
             <div className="relative z-10 max-w-7xl mx-auto w-full">
                 {/* Section Header */}
                 <div className="text-center mb-16 animate-fade-in-up">
-                    <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-                        <span className="text-gradient">About Us</span>
+                    <h2 className="text-4xl md:text-7xl font-bold mb-6 tracking-tight">
+                        <span className="text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]">About Us</span>
                     </h2>
                     <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
-                        Redefining real estate investment through innovation, sustainability, and unparalleled expertise.
+                        Reinventing real estate investment through blockchain, transparency, and global accessibility.
                     </p>
                 </div>
 
@@ -29,29 +29,15 @@ const About = () => {
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-min">
 
                     {/* Vision Card (Large) */}
-                    <div className="md:col-span-8 glass-card rounded-3xl p-8 md:p-10 border border-white/5 bg-white/5 backdrop-blur-md flex flex-col justify-center transition-transform duration-300 hover:scale-[1.01] hover:bg-white/10 group">
-                        <div className="w-12 h-12 rounded-full bg-stone-cyan/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <Target className="w-6 h-6 text-stone-cyan" />
+                    <div className="md:col-span-12 glass-card rounded-3xl p-8 md:p-10 border border-white/5 bg-white/5 backdrop-blur-md flex flex-col justify-center transition-transform duration-300 hover:scale-[1.01] hover:bg-white/10 group">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 rounded-full bg-stone-cyan/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <Target className="w-6 h-6 text-stone-cyan" />
+                            </div>
+                            <h3 className="text-2xl md:text-3xl font-bold">Our Vision</h3>
                         </div>
-                        <h3 className="text-2xl md:text-3xl font-bold mb-4">Our Vision</h3>
                         <p className="text-gray-300 text-lg leading-relaxed font-light">
-                            At <span className="text-white font-semibold">STONEFORM</span>, we are a dynamic collective of seasoned property entrepreneurs and real estate professionals. We are united by a shared vision: to democratize access to premium real estate assets using blockchain technology, ensuring <span className="text-stone-cyan">transparency</span>, <span className="text-stone-cyan">liquidity</span>, and <span className="text-stone-cyan">sustainable growth</span> for all investors.
-                        </p>
-                    </div>
-
-                    {/* Stats Card (Medium) */}
-                    <div className="md:col-span-4 glass-card rounded-3xl p-8 md:p-10 border border-white/5 bg-gradient-to-br from-stone-purple/10 to-stone-dark/50 backdrop-blur-md flex flex-col justify-center items-center text-center transition-transform duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(180,50,255,0.2)] group">
-                        <div className="w-16 h-16 rounded-full bg-stone-purple/20 flex items-center justify-center mb-4 group-hover:animate-pulse">
-                            <TrendingUp className="w-8 h-8 text-stone-purple" />
-                        </div>
-                        <span className="text-5xl md:text-6xl font-black text-white mb-2 tracking-tighter">
-                            $287M+
-                        </span>
-                        <span className="text-sm md:text-base text-gray-300 font-medium uppercase tracking-widest">
-                            Transaction Volume
-                        </span>
-                        <p className="text-xs text-gray-400 mt-4 leading-normal">
-                            Decades of combined experience identifying and managing high-potential assets.
+                            At <span className="text-white font-semibold">STONEFORM</span>, we are building a new generation of real estate investment infrastructure by combining institutional-grade property expertise with blockchain technology. Our mission is to make premium real estate accessible to a global audience through <span className="text-stone-cyan">fractional ownership</span>, <span className="text-stone-cyan">tokenization</span>, and <span className="text-stone-cyan">sustainable growth</span> automated smart-contract governance.
                         </p>
                     </div>
 
@@ -63,7 +49,7 @@ const About = () => {
                         <div>
                             <h4 className="text-xl font-bold mb-2">Secure & Compliant</h4>
                             <p className="text-sm text-gray-400 leading-relaxed">
-                                Operating with full regulatory compliance and institutional-grade security standards to protect your investments.
+                                STONEFORM operates within a robust legal and regulatory framework, integrating KYC/AML procedures, jurisdiction-specific compliance checks, and smart-contract-based enforcement.
                             </p>
                         </div>
                     </div>
@@ -76,7 +62,7 @@ const About = () => {
                         <div>
                             <h4 className="text-xl font-bold mb-2">Community Driven</h4>
                             <p className="text-sm text-gray-400 leading-relaxed">
-                                Empowering our community through DAO governance, giving token holders a voice in major platform decisions.
+                                Governance at STONEFORM is community-oriented and transparent. STOF token holders participate in key platform decisions, including property acquisitions, asset management strategies, and ecosystem evolution.
                             </p>
                         </div>
                     </div>

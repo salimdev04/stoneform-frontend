@@ -95,7 +95,7 @@ const Invest = () => {
                     <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-8 animate-fade-in-up">
                         <div>
                             <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-tight">
-                                Trade <span className="text-gradient">$STOF</span>
+                                Trade <span className="text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]">$STOF</span>
                             </h1>
                             <p className="text-lg md:text-xl text-gray-400 font-light max-w-lg">
                                 Securely exchange your assets for STOF tokens and join the future of real estate investment on-chain.
@@ -105,7 +105,7 @@ const Invest = () => {
                         {/* Video Container with Glow */}
                         <div className="relative w-[300px] h-[300px] md:w-[500px] md:h-[500px]">
                             <div className="absolute inset-0 bg-stone-cyan/20 blur-3xl rounded-full scale-90 animate-pulse-slow"></div>
-                            <img src={"/StoneformLogo.png"} alt="StoneformCoin" className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_50px_rgba(0,198,255,0.2)]" />
+                            <img src={"/StoneformCoin.gif"} alt="StoneformCoin" className="w-full h-full object-contain relative z-10 mix-blend-lighten" />
                         </div>
                     </div>
 
@@ -212,7 +212,7 @@ const Invest = () => {
                                         <div className="flex items-center gap-2 bg-stone-cyan/10 border border-stone-cyan/20 rounded-full px-3 py-1.5">
                                             {/* Small video logo for token icon if possible, else fallback */}
                                             <div className="w-6 h-6 rounded-full overflow-hidden bg-stone-dark relative">
-                                                <img src="/StoneformLogo.png" alt="StoneformCoin" className="w-full h-full object-contain" />
+                                                <img src="/StoneformCoin.gif" alt="StoneformCoin" className="w-full h-full object-contain mix-blend-lighten" />
                                             </div>
                                             <span className="font-bold text-stone-cyan">STOF</span>
                                         </div>
@@ -251,6 +251,15 @@ const Invest = () => {
                     </div>
                 </div>
             </main>
+
+            {/* Disclaimer Section */}
+            <section className="max-w-7xl mx-auto px-4 md:px-8 pb-12 opacity-50 hover:opacity-100 transition-opacity duration-300">
+                <div className="border-t border-white/10 pt-8">
+                    <p className="text-[10px] md:text-xs text-gray-500 text-justify leading-relaxed font-light">
+                        This whitepaper is provided for informational purposes only and does not constitute an offer, solicitation, or recommendation to buy or sell any securities, tokens, or financial instruments in any jurisdiction. STOF tokens and participation in the STONEFORM ecosystem involve significant risks, including market volatility, regulatory uncertainty, liquidity limitations, and potential technical or smart contract failures, and there is no guarantee of profits, returns, or capital preservation. All statements regarding future performance, timelines, asset growth, or ecosystem development are forward-looking and subject to change without notice. The availability of STOF tokens may be restricted in certain jurisdictions, and it is the sole responsibility of each participant to ensure compliance with applicable local laws and regulations. Nothing in this document constitutes legal, financial, tax, or investment advice, and STONEFORM, its team, partners, and affiliates shall not be held liable for any direct or indirect loss arising from reliance on this whitepaper or participation in the STOF ecosystem.
+                    </p>
+                </div>
+            </section>
 
             <Footer />
         </div>
