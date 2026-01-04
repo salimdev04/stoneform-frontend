@@ -5,20 +5,20 @@ import Link from 'next/link'; // Added import
 import Footer from '../components/Footer';
 import { Settings, History, ArrowDown, ChevronDown, Wallet, ArrowLeft } from 'lucide-react'; // Added ArrowLeft
 import { useAccount } from 'wagmi';
-import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import Button from '../components/Button';
 
 const Invest = () => {
-    const { isConnected, address } = useAccount();
+    const { isConnected } = useAccount();
     const { openConnectModal } = useConnectModal();
     const [sellAmount, setSellAmount] = useState('');
     const [buyAmount, setBuyAmount] = useState('');
-    const [selectedToken, setSelectedToken] = useState('ETH');
+    const [selectedToken, setSelectedToken] = useState('BNB');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     // Conversion rates and mock prices
     const tokens = {
-        ETH: { symbol: 'ETH', rate: 10000, price: 3200, image: '/eth.png' },
+        BNB: { symbol: 'BNB', rate: 10000, price: 3200, image: '/bnb.webp' },
         USDT: { symbol: 'USDT', rate: 3.125, price: 1, image: '/usdt.png' },
         USDC: { symbol: 'USDC', rate: 3.125, price: 1, image: '/usdc.png' },
     };
@@ -69,12 +69,7 @@ const Invest = () => {
                         </button>
                     ) : (
                         <div className='flex'>
-                            <div className="flex items-center gap-2 bg-stone-cyan/10 border border-stone-cyan/20 px-4 py-2 rounded-xl">
-                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                                <span className="text-stone-cyan font-bold font-mono">
-                                    {address?.slice(0, 6)}...{address?.slice(-4)}
-                                </span>
-                            </div>
+                            <ConnectButton showBalance={false} accountStatus="address" chainStatus="none" />
                             <Button variant="secondary" className="!py-2 ml-4 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto sm:w-[160px] h-[40px] sm:h-[50px]">
                                 Contact
                             </Button>
@@ -83,7 +78,7 @@ const Invest = () => {
                 </div>
             </header>
 
-            <main className="flex-grow flex items-center justify-center relative pt-24 pb-12 px-4 md:px-8">
+            <main className="flex-grow flex items-center justify-center relative mt-20 pt-24 pb-12 px-4 md:px-8">
                 {/* Background Elements */}
                 <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0a0a2e] via-stone-dark to-stone-dark opacity-60"></div>
                 <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-stone-cyan/10 blur-[120px] rounded-full pointer-events-none"></div>
@@ -105,12 +100,12 @@ const Invest = () => {
                         {/* Video Container with Glow */}
                         <div className="relative w-[300px] h-[300px] md:w-[500px] md:h-[500px]">
                             <div className="absolute inset-0 bg-stone-cyan/20 blur-3xl rounded-full scale-90 animate-pulse-slow"></div>
-                            <img src={"/StoneformCoin.gif"} alt="StoneformCoin" className="w-full h-full object-contain relative z-10 mix-blend-lighten" />
+                            <img src={"/StoneformLogo.png"} alt="StoneformCoin" className="w-full h-full object-contain relative z-10 mix-blend-lighten" />
                         </div>
                     </div>
 
                     {/* Right Column: Swap Widget */}
-                    <div className="w-full max-w-md mx-auto lg:mx-0 animate-fade-in-up delay-100">
+                    <div className="w-full max-w-lg mx-auto lg:mx-0 animate-fade-in-up delay-100">
                         <div className="glass-card rounded-3xl p-6 border border-white/5 bg-stone-dark/40 backdrop-blur-xl shadow-2xl relative overflow-hidden">
                             {/* Card Header */}
                             <div className="flex items-center justify-between mb-6">
@@ -129,9 +124,8 @@ const Invest = () => {
                             <div className="flex items-center gap-2 mb-6">
                                 <span className="text-sm text-gray-400">Network:</span>
                                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-pointer">
-                                    <div className="w-4 h-4 rounded-full bg-[#627EEA]"></div> {/* ETH Blue mock */}
-                                    <span className="text-sm font-medium">Ethereum</span>
-                                    <ChevronDown className="w-3 h-3 text-gray-400" />
+                                    <div className="w-4 h-4 rounded-full bg-[#F7BE7D]"></div>
+                                    <span className="text-sm font-medium">Binance Smart Chain</span>
                                 </div>
                             </div>
 
@@ -230,20 +224,18 @@ const Invest = () => {
                             {/* Action Button */}
                             <div className="mt-6">
                                 {!isConnected ? (
-                                    <button
+                                    <Button
+                                        variant="primary"
                                         onClick={openConnectModal}
-                                        className="w-full py-4 rounded-xl bg-gradient-to-r from-stone-cyan to-stone-purple font-bold text-lg text-white shadow-lg shadow-stone-cyan/20 hover:shadow-stone-cyan/40 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+                                        className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[50px] w-full"
                                     >
                                         <Wallet className="w-5 h-5" />
                                         Connect Wallet
-                                    </button>
+                                    </Button>
                                 ) : (
-                                    <button
-                                        className="w-full py-4 rounded-xl bg-gradient-to-r from-stone-cyan to-stone-purple font-bold text-lg text-white shadow-lg shadow-stone-cyan/20 hover:shadow-stone-cyan/40 hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                        disabled={!sellAmount}
-                                    >
+                                    <Button variant="primary" className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[50px] w-full">
                                         Swap Now
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
 

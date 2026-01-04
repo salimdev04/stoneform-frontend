@@ -7,15 +7,11 @@ const Footer = () => {
             <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs md:text-sm">
                 <div className="flex flex-wrap justify-center gap-4 md:gap-6">
                     <Link href="/disclaimer" className="hover:text-white transition-colors">
-                        Risk Disclosure & Disclaimers
+                        Legal & Disclaimers
                     </Link>
                     <span className="hidden md:inline">|</span>
-                    <Link href="#" className="hover:text-white transition-colors">
-                        Terms & Conditions
-                    </Link>
-                    <span className="hidden md:inline">|</span>
-                    <Link href="/privacy-policy" className="hover:text-white transition-colors">
-                        Privacy Policy
+                    <Link href="/WhitepaperV4.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                        Whitepaper
                     </Link>
                 </div>
                 <div className="text-center md:text-right">

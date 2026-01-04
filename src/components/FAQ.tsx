@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { ChevronDown, HelpCircle, MessageCircle } from 'lucide-react';
+import { ChevronDown, HelpCircle, MessageCircle, Twitter, Send, Linkedin, MessageSquare } from 'lucide-react';
 
 const faqs = [
     {
@@ -101,10 +101,29 @@ const FAQ = () => {
 
                 <div className="mt-12 text-center">
                     <p className="text-gray-400 mb-6">Still have questions?</p>
-                    <button className="px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-white font-medium transition-all duration-300 flex items-center gap-2 mx-auto hover:scale-105 group">
+                    <button className="px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-white font-medium transition-all duration-300 flex items-center gap-2 mx-auto hover:scale-105 group mb-8">
                         <MessageCircle className="w-4 h-4 text-stone-cyan group-hover:text-stone-purple transition-colors" />
                         Contact Support
                     </button>
+
+                    <div className="flex items-center justify-center gap-4">
+                        {[
+                            { icon: Twitter, href: "https://twitter.com/ICOstoneform", color: "hover:text-stone-cyan" },
+                            { icon: Send, href: "https://t.me/icostoneform", color: "hover:text-stone-cyan" }, // Telegram uses Send icon usually
+                            { icon: MessageSquare, href: "https://discord.gg/ICOstoneform", color: "hover:text-stone-purple" }, // Discord
+                            { icon: Linkedin, href: "https://linkedin.com/company/ICOstoneform", color: "hover:text-blue-500" }
+                        ].map((social, i) => (
+                            <a
+                                key={i}
+                                href={social.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 transition-all duration-300 hover:scale-110 hover:bg-white/10 ${social.color}`}
+                            >
+                                <social.icon className="w-5 h-5" />
+                            </a>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
