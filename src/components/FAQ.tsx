@@ -110,8 +110,6 @@ const FAQ = () => {
                         {[
                             { icon: Twitter, href: "https://twitter.com/ICOstoneform", color: "hover:text-stone-cyan" },
                             { icon: Send, href: "https://t.me/icostoneform", color: "hover:text-stone-cyan" }, // Telegram uses Send icon usually
-                            { icon: MessageSquare, href: "https://discord.gg/ICOstoneform", color: "hover:text-stone-purple" }, // Discord
-                            { icon: Linkedin, href: "https://linkedin.com/company/ICOstoneform", color: "hover:text-blue-500" }
                         ].map((social, i) => (
                             <a
                                 key={i}

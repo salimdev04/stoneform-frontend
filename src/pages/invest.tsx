@@ -124,7 +124,7 @@ const Invest = () => {
                             <div className="flex items-center gap-2 mb-6">
                                 <span className="text-sm text-gray-400">Network:</span>
                                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-pointer">
-                                    <div className="w-4 h-4 rounded-full bg-[#F7BE7D]"></div>
+                                    <div className="w-4 h-4 rounded-full bg-[#b07405]"></div>
                                     <span className="text-sm font-medium">Binance Smart Chain</span>
                                 </div>
                             </div>
@@ -204,9 +204,8 @@ const Invest = () => {
                                             className="bg-transparent text-3xl font-bold text-stone-cyan outline-none w-full placeholder-gray-600 cursor-default"
                                         />
                                         <div className="flex items-center gap-2 bg-stone-cyan/10 border border-stone-cyan/20 rounded-full px-3 py-1.5">
-                                            {/* Small video logo for token icon if possible, else fallback */}
                                             <div className="w-6 h-6 rounded-full overflow-hidden bg-stone-dark relative">
-                                                <img src="/StoneformCoin.gif" alt="StoneformCoin" className="w-full h-full object-contain mix-blend-lighten" />
+                                                <img src="/StoneformLogo.png" alt="StoneformCoin" className="w-full h-full object-contain mix-blend-lighten" />
                                             </div>
                                             <span className="font-bold text-stone-cyan">STOF</span>
                                         </div>
@@ -227,13 +226,13 @@ const Invest = () => {
                                     <Button
                                         variant="primary"
                                         onClick={openConnectModal}
-                                        className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[50px] w-full"
+                                        className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full"
                                     >
                                         <Wallet className="w-5 h-5" />
                                         Connect Wallet
                                     </Button>
                                 ) : (
-                                    <Button variant="primary" className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[50px] w-full">
+                                    <Button variant="primary" className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full">
                                         Swap Now
                                     </Button>
                                 )}
@@ -248,7 +247,7 @@ const Invest = () => {
             <section className="max-w-7xl mx-auto px-4 md:px-8 pb-12 opacity-50 hover:opacity-100 transition-opacity duration-300">
                 <div className="border-t border-white/10 pt-8">
                     <p className="text-[10px] md:text-xs text-gray-500 text-justify leading-relaxed font-light">
-                        This whitepaper is provided for informational purposes only and does not constitute an offer, solicitation, or recommendation to buy or sell any securities, tokens, or financial instruments in any jurisdiction. STOF tokens and participation in the STONEFORM ecosystem involve significant risks, including market volatility, regulatory uncertainty, liquidity limitations, and potential technical or smart contract failures, and there is no guarantee of profits, returns, or capital preservation. All statements regarding future performance, timelines, asset growth, or ecosystem development are forward-looking and subject to change without notice. The availability of STOF tokens may be restricted in certain jurisdictions, and it is the sole responsibility of each participant to ensure compliance with applicable local laws and regulations. Nothing in this document constitutes legal, financial, tax, or investment advice, and STONEFORM, its team, partners, and affiliates shall not be held liable for any direct or indirect loss arising from reliance on this whitepaper or participation in the STOF ecosystem.
+                        The STONEFORM Token (STOF) is a blockchain-based token designed to provide participation in the STONEFORM ecosystem, including fractional exposure to tokenized real estate assets and platform governance rights, subject to applicable terms and regulatory requirements. STOF does not represent equity, ownership, or shares in STONEFORM or any affiliated entity, nor does it guarantee profits, returns, or capital preservation. Participation in the STOF token sale and holding STOF involves significant risks, including market volatility, regulatory uncertainty, liquidity limitations, and potential technical or smart contract failures. The availability and transferability of STOF may be restricted in certain jurisdictions, and all participants are responsible for ensuring compliance with applicable local laws and regulations. Nothing in this communication constitutes legal, financial, tax, or investment advice, and all forward-looking statements are subject to change without notice.
                     </p>
                 </div>
             </section>

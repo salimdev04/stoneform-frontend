@@ -15,7 +15,7 @@ const Footer = () => {
                     </Link>
                 </div>
                 <div className="text-center md:text-right">
-                    ©2025 STONEFORM. All Rights Reserved.
+                    ©2026 STONEFORM. All Rights Reserved.
                 </div>
             </div>
         </footer>

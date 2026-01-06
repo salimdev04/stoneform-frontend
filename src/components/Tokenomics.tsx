@@ -162,7 +162,7 @@ const Tokenomics = () => {
                     {/* Right Side: Details */}
                     <div className="flex flex-col gap-6">
                         {/* Token Overview */}
-                        <div className="glass-card rounded-3xl p-8 border border-white/5 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-xl">
+                        <div className="p-8">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2 rounded-xl bg-stone-purple/10 border border-stone-purple/20">
                                     <Database className="w-5 h-5 text-stone-purple" />
@@ -203,7 +203,7 @@ const Tokenomics = () => {
                         </div>
 
                         {/* Legend */}
-                        <div className="glass-card rounded-3xl p-8 border border-white/5 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-xl">
+                        <div className="p-8">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2 rounded-xl bg-stone-cyan/10 border border-stone-cyan/20">
                                     <PieChart className="w-5 h-5 text-stone-cyan" />
@@ -232,7 +232,7 @@ const Tokenomics = () => {
                 </div>
 
                 {/* Token Utility */}
-                <div className="glass-card rounded-3xl p-8 border border-white/5 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-xl mt-12 relative overflow-hidden group">
+                <div className="py-8 mt-12 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-stone-cyan/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-stone-cyan/10 transition-colors duration-500"></div>
 
                     <div className="flex items-center gap-3 mb-8 relative z-10">
