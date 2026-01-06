@@ -18,7 +18,7 @@ const Home: NextPage = () => {
           content="STONEFORM transforms real estate with blockchain, offering fractional ownership, passive income, and seamless trading, all while promoting sustainability."
           name="description"
         />
-        <link href="/favicon.ico" rel="icon" />
+        <link href="/StoneformLogo.png" rel="icon" />
       </Head>
 
       <main className="flex flex-col w-full bg-stone-dark overflow-x-hidden">

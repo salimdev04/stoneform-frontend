@@ -47,6 +47,7 @@ const Invest = () => {
             <Head>
                 <title>Invest | StoneForm</title>
                 <meta name="description" content="Swap ETH/USDT for STOF tokens securely and instantly." />
+                <link href="/StoneformLogo.png" rel="icon" />
             </Head>
 
             {/* Custom Header for Invest Page */}

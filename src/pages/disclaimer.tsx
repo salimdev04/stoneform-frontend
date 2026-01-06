@@ -10,6 +10,7 @@ const Disclaimer = () => {
             <Head>
                 <title>Disclaimer | StoneForm</title>
                 <meta name="description" content="General Legal Disclaimer for STONEFORM ecosystem and STOF tokens." />
+                <link href="/StoneformLogo.png" rel="icon" />
             </Head>
 
             {/* Header */}
