@@ -28,15 +28,23 @@ export default function Navbar() {
 
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-50 py-4 flex items-center justify-between px-4 sm:px-8 sm:py-6 max-w-[2000px] mx-auto transition-all duration-300 ${isScrolled ? 'backdrop-blur-md bg-stone-dark/80 shadow-lg' : 'bg-transparent'
+        <nav className={`fixed top-0 left-0 right-0 z-50 py-4 flex items-center justify-between px-4 sm:px-8 sm:py-6 max-w-[2000px] mx-auto transition-all duration-300 ${isScrolled ? 'backdrop-blur-md bg-stone-dark shadow-lg' : 'bg-transparent'
             }`}>
             <Link href={"/"} className="flex items-center gap-2">
                 <div className="w-[60px] h-[60px] sm:w-[100px] sm:h-[100px] relative">
-                    <img
-                        src="/StoneformLogo.png"
-                        alt="StoneForm"
-                        className="w-full h-full object-contain"
-                    />
+                    {!isScrolled ? (
+                        <img
+                            src="/StoneformLogo.png"
+                            alt="StoneForm"
+                            className="w-full h-full object-contain"
+                        />
+                    ) : (
+                        <img
+                            src="/Coin.gif"
+                            alt="StoneForm"
+                            className="object-contain mix-blend-screen"
+                        />
+                    )}
                 </div>
             </Link>
 

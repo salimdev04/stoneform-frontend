@@ -1,100 +1,59 @@
-STONEFORM User Flow
-Objective of the Flow
-To clearly map how users move through the platform, from first visit → KYC → deposit →
-investment → portfolio tracking → withdrawal.
-This flow will help your design, frontend, and backend teams align perfectly.
-Main User Roles
-1. Investor (end-user)
-2. Admin (internal team)
-Investor User Flow
-A. Landing Page: similar to World Liberty Financial
-Purpose: Convert visitors into registered investors.
-Actions:
-View project overview, features, returns, and FAQs
-Click “Get Started” or “Invest Now”
-Goes to: Signup / Onboarding
-B. Onboarding (Signup + KYC)
-Flow:
-1. Sign Up – Email, password, referral (optional)
-2. Verify Email
-3. KYC Process
-Upload document
-Add proof of address
-Wait for admin approval (status: pending/verified/rejected)
-4. Wallet Connection
-Connect via MetaMask or WalletConnect
-5. Profile Setup Complete
-Goes to: Dashboard (Investor Home)
-C. Dashboard (Investor Home)
-Main components:
-Investment summary (balance, ROI, portfolio chart, transactions)
-“Invest Now” button
-Notifications (KYC updates, payouts, messages)
-Transactions history
-Goes to: Investment Module
-D. Investment Module
-Options:
-Choose property / project / token plan
-Enter amount
-Select payment method:
-Crypto (via MetaMask/WalletConnect)
-Fiat (via Transak)
-Confirm investment → Smart contract / backend transaction executed
-After success:
-Transaction confirmation
-“View Investment Details” link
-Goes to: Portfolio section
-E. Portfolio Section
-Purpose: Manage active investments
-Features:
-Total invested, profit earned, active plans
-Charts and performance indicators
-“Withdraw” or “Redeem” button
-Transactions history
-Goes to: Transaction History
-F. Transaction History
-Purpose: Track all user activities
-Details:
-Deposits, investments, payouts, redemptions
-Filter by date/type/status
-Export to CSV
-Goes to: Account Settings
-G. Account Settings
-Update personal info
-Manage wallets
-KYC re-verification if expired
-Logout
-Admin User Flow
-Admin Dashboard
-Sections:
-1. User Management – View users, verify KYC, suspend accounts
-2. Investments Overview – List of all active and completed investments
-3. Transactions – Track deposits, payouts, Transak logs
-4. Analytics – Graphs for ROI, growth, active investors
-5. Notifications – Handle messages or alerts to users
-Technical Integration Points
-Step Integration Description
-Signup Backend API User creation, auth (JWT)
-KYC KYC Provider API Upload + verify ID
-Wallet Connection MetaMask / WalletConnect Wagmi
-Fiat Payment Transak API On-ramp for fiat investment
-Dashboard Data Backend API Fetch user portfolio data
-Transaction History Backend API CRUD and pagination
-Admin Actions Secure Admin API Role-based access
-Suggested User Flow Diagram (Text Version)
-Landing Page
-↓
-Signup / Login
-↓
-KYC Verification
-↓
-Wallet Connection
-↓
-Investor Dashboard
-├── View Portfolio
-├── Invest (Crypto / Fiat)
-├── Withdraw Funds
-├── Transaction History
-└── Account Settings
-↓
-Logout
+Token Launch Implementation Plan
+Core Components Overview
+1- Token Contract
+An ERC-20 token implemented using audited, industry-standard OpenZeppelin contracts.
+2- Presale Contract
+A dedicated smart contract managing a six-phase presale, with distinct pricing, allocation
+limits, and durations for each phase.
+2- Multisignature Wallet (Treasury / Distributor)
+Acts as the central treasury of the protocol. It receives the full token supply at
+deployment and manages all token distributions, including presale allocations, vesting
+streams, liquidity provisioning, and ecosystem allocations.
+3- Vesting Infrastructure (Sablier)
+Utilizes Sablier as the canonical vesting solution to manage token vesting for presale
+participants, team members, and advisors.
+4- Frontend Application
+Provides the user interface for presale participation (pre-TGE) and vesting/claim
+management (post-TGE).
+1. Token Contract
+ERC-20 token implemented using audited OpenZeppelin standards
+Total token supply minted at deployment
+100% of the supply is immediately transferred to a Safe Multisig Wallet controlled by the
+core team
+2. Multisignature Wallet (Treasury / Distributor)
+Serves as the central treasury managing the entire token supply
+Responsible for:
+Funding presale token allocations
+Funding vesting streams for team members, advisors, contributors, and presale
+participants
+Liquidity provisioning and ecosystem allocations
+May also act as the recipient of funds collected during the presale
+Secured through multi-signature approval
+Implemented using Safe (formerly Gnosis Safe) as an institutional-grade multisig solution
+3. Presale Contract
+Multi-tier presale contract managing all six sale phases
+Each phase includes:
+Phase-specific token pricing
+Allocation caps
+Defined sale durations
+Presale token allocations are funded directly by the Multisig Wallet
+At the claim date, a Sablier vesting stream is created for each participant, handling token
+release and vesting on a per-user basis
+Supports payments in BNB and approved stablecoins
+4. Vesting Infrastructure (Sablier)
+Sablier is used as the canonical, battle-tested vesting solution
+Responsible for:
+Presale participant vesting
+Team and advisor vesting
+Each beneficiary receives an individual vesting stream
+Eliminates the need for custom vesting logic, reducing protocol complexity and risk
+5. Frontend Application
+Pre-TGE Interface
+Presale participation flow
+Visibility into sale phases (pricing, allocation caps, vesting terms)
+Wallet connection and payment handling
+Balance checks and transaction status monitoring
+Post-TGE Interface
+Overview of vesting streams for presale participants
+Display of vested and claimable amounts
+Direct link to claim tokens via Sablier

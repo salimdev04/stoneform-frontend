@@ -3,13 +3,17 @@ import Head from 'next/head';
 import Link from 'next/link'; // Added import
 // import Navbar from '../components/Navbar'; // Removed/Kept existing comment if needed, but logic replaces it
 import Footer from '../components/Footer';
-import { Settings, History, ArrowDown, ChevronDown, Wallet, ArrowLeft } from 'lucide-react'; // Added ArrowLeft
-import { useAccount } from 'wagmi';
+import { ArrowLeft, Wallet, AlertCircle, Check, Copy, ExternalLink, RefreshCw, X, Settings, ArrowDown, ChevronDown, History as HistoryIcon } from 'lucide-react';
+import DappNavbar from '../components/DappNavbar'; // Added ArrowLeft
+import { useAccount, useBalance } from 'wagmi';
 import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import Button from '../components/Button';
 
 const Invest = () => {
-    const { isConnected } = useAccount();
+    const { address, isConnected } = useAccount();
+    const { data: balanceData } = useBalance({
+        address: address,
+    });
     const { openConnectModal } = useConnectModal();
     const [sellAmount, setSellAmount] = useState('');
     const [buyAmount, setBuyAmount] = useState('');
@@ -46,12 +50,14 @@ const Invest = () => {
         <div className="flex flex-col min-h-screen bg-stone-dark text-white overflow-x-hidden">
             <Head>
                 <title>Invest | StoneForm</title>
-                <meta name="description" content="Swap ETH/USDT for STOF tokens securely and instantly." />
+                <meta name="description" content="Swap BNB/USDT for STOF tokens securely and instantly." />
                 <link href="/StoneformLogo.png" rel="icon" />
             </Head>
 
+            <DappNavbar />
+
             {/* Custom Header for Invest Page */}
-            <header className="absolute top-0 left-0 right-0 z-50 py-6 flex items-center justify-between max-w-7xl mx-auto w-full">
+            {/* <header className="absolute top-0 left-0 right-0 z-50 py-6 flex items-center justify-between max-w-7xl mx-auto w-full">
                 <Link href="/" className="flex items-center gap-2 group">
                     <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                         <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
@@ -77,13 +83,13 @@ const Invest = () => {
                         </div>
                     )}
                 </div>
-            </header>
+            </header> */}
 
-            <main className="flex-grow flex items-center justify-center relative mt-20 pt-24 pb-12 px-4 md:px-8">
+            <main className="flex-grow flex items-center justify-center relative mt-32 pt-24 pb-12 px-4 md:px-8">
                 {/* Background Elements */}
-                <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0a0a2e] via-stone-dark to-stone-dark opacity-60"></div>
-                <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-stone-cyan/10 blur-[120px] rounded-full pointer-events-none"></div>
-                <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-stone-purple/10 blur-[120px] rounded-full pointer-events-none"></div>
+                {/* <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0a0a2e] via-stone-dark to-stone-dark opacity-60"></div> */}
+                {/* <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-stone-cyan/10 blur-[120px] rounded-full pointer-events-none"></div> */}
+                {/* <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-stone-purple/10 blur-[120px] rounded-full pointer-events-none"></div> */}
 
                 <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
 
@@ -99,25 +105,32 @@ const Invest = () => {
                         </div>
 
                         {/* Video Container with Glow */}
-                        <div className="relative w-[300px] h-[300px] md:w-[500px] md:h-[500px]">
-                            <div className="absolute inset-0 bg-stone-cyan/20 blur-3xl rounded-full scale-90 animate-pulse-slow"></div>
-                            <img src={"/StoneformLogo.png"} alt="StoneformCoin" className="w-full h-full object-contain relative z-10 mix-blend-lighten" />
+                        <div className="relative w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-stone-dark">
+                            {/* <div className="absolute inset-0 bg-stone-cyan/20 blur-3xl rounded-full scale-90 animate-pulse-slow"></div> */}
+                            <img src={"/Coin.gif"} alt="StoneformCoin" className="w-full h-full relative z-10 mix-blend-screen" />
                         </div>
                     </div>
 
                     {/* Right Column: Swap Widget */}
-                    <div className="w-full max-w-lg mx-auto lg:mx-0 animate-fade-in-up delay-100">
+                    <div className="w-full max-w-lg mx-auto lg:mx-0 animate-fade-in-up delay-100 mt-32">
                         <div className="glass-card rounded-3xl p-6 border border-white/5 bg-stone-dark/40 backdrop-blur-xl shadow-2xl relative overflow-hidden">
                             {/* Card Header */}
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-xl font-bold text-white">Exchange</h2>
-                                <div className="flex items-center gap-2">
-                                    <button className="p-2 hover:bg-white/5 rounded-full transition-colors text-gray-400 hover:text-white">
-                                        <History className="w-5 h-5" />
-                                    </button>
-                                    <button className="p-2 hover:bg-white/5 rounded-full transition-colors text-gray-400 hover:text-white">
-                                        <Settings className="w-5 h-5" />
-                                    </button>
+                                <div className="flex items-center gap-3">
+                                    {isConnected && address && (
+                                        <>
+                                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-dark/50 border border-white/5">
+                                                <Wallet className="w-3 h-3 text-stone-cyan" />
+                                                <span className="text-sm font-medium text-stone-cyan">
+                                                    {balanceData?.formatted ? parseFloat(balanceData.formatted).toFixed(4) : '0'} {balanceData?.symbol}
+                                                </span>
+                                            </div>
+                                            <div className="px-3 py-1.5 rounded-full bg-white/5 border border-white/5 text-sm text-gray-400 font-mono">
+                                                {address.slice(0, 6)}...{address.slice(-4)}
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
 
@@ -234,7 +247,7 @@ const Invest = () => {
                                     </Button>
                                 ) : (
                                     <Button variant="primary" className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full">
-                                        Swap Now
+                                        Buy Now
                                     </Button>
                                 )}
                             </div>
