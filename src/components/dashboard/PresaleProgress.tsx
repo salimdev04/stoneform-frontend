@@ -119,7 +119,7 @@ const PresaleProgress: React.FC = () => {
                 <div className="mt-6 pt-4 border-t border-white/5 flex items-start gap-2 text-xs text-gray-400">
                     <Info className="w-4 h-4 shrink-0 text-stone-300 mt-0.5" />
                     <p>
-                        Presale stages occur sequentially. Once a stage's allocation is filled, the price increases immediately to the next tier.
+                        Presale stages occur sequentially. Once a stage&apos;s allocation is filled, the price increases immediately to the next tier.
                         Smart contract ensures hard cap of $50M cannot be exceeded.
                     </p>
                 </div>
