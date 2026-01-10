@@ -1,16 +1,30 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link'; // Added import
+import Image from 'next/image';
 // import Navbar from '../components/Navbar'; // Removed/Kept existing comment if needed, but logic replaces it
 import Footer from '../components/Footer';
 import { ArrowLeft, Wallet, AlertCircle, Check, Copy, ExternalLink, RefreshCw, X, Settings, ArrowDown, ChevronDown, History as HistoryIcon } from 'lucide-react';
 import DappNavbar from '../components/DappNavbar'; // Added ArrowLeft
-import { useAccount, useBalance } from 'wagmi';
+import { useAccount, useBalance, useSwitchChain } from 'wagmi';
 import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import Button from '../components/Button';
+import { useStoneformICO } from '../hooks/useStoneformICO';
+import { useTokenContract } from '../hooks/useTokenContract';
+import { formatUnits, parseUnits } from 'viem';
+import { useEffect } from 'react';
 
 const Invest = () => {
-    const { address, isConnected } = useAccount();
+    const { address, isConnected, chain } = useAccount();
+    const { switchChain } = useSwitchChain();
+
+    // Enforce BSC Chain
+    useEffect(() => {
+        if (isConnected && chain?.id !== 56) {
+            switchChain({ chainId: 56 });
+        }
+    }, [isConnected, chain, switchChain]);
+
     const { data: balanceData } = useBalance({
         address: address,
     });
@@ -20,29 +34,65 @@ const Invest = () => {
     const [selectedToken, setSelectedToken] = useState('BNB');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    // Conversion rates and mock prices
+    const { getLatestPrice, getTokenAmountPerUSD } = useStoneformICO();
+
+    // Fetch Prices
+    const { data: bnbPrice } = getLatestPrice(0); // Assuming 0 = BNB
+    const { data: usdtPrice } = getLatestPrice(1); // Assuming 1 = USDT
+    const { data: usdcPrice } = getLatestPrice(2); // Assuming 2 = USDC
+    const { data: stofRate } = getTokenAmountPerUSD(); // STOF per USD
+
+    // Token Config
+    // Note: In a real app, addresses should come from env or contract
+    const USN_ADDRESS = "0x0000000000000000000000000000000000000000"; // Replace with real
+    const USDC_ADDRESS = "0x0000000000000000000000000000000000000000"; // Replace with real
+
     const tokens = {
-        BNB: { symbol: 'BNB', rate: 10000, price: 3200, image: '/bnb.webp' },
-        USDT: { symbol: 'USDT', rate: 3.125, price: 1, image: '/usdt.png' },
-        USDC: { symbol: 'USDC', rate: 3.125, price: 1, image: '/usdc.png' },
+        BNB: { symbol: 'BNB', paymentType: 0, price: bnbPrice ? Number(formatUnits(bnbPrice as bigint, 8)) : 0, image: '/bnb.webp', address: undefined, decimals: 18 },
+        USDT: { symbol: 'USDT', paymentType: 1, price: usdtPrice ? Number(formatUnits(usdtPrice as bigint, 8)) : 1, image: '/usdt.png', address: USN_ADDRESS, decimals: 18 }, // Check decimals
+        USDC: { symbol: 'USDC', paymentType: 2, price: usdcPrice ? Number(formatUnits(usdcPrice as bigint, 8)) : 1, image: '/usdc.png', address: USDC_ADDRESS, decimals: 18 }, // Check decimals
+    };
+
+    const selectedTokenData = tokens[selectedToken as keyof typeof tokens];
+
+    // Approval Logic (for non-native tokens)
+    const { getAllowance, approve, isPending: isApproving, isConfirming: isApprovalConfirming } = useTokenContract(selectedTokenData.address as `0x${string}` || '0x0000000000000000000000000000000000000000');
+    const { data: allowance } = getAllowance(address as `0x${string}`, process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string}`);
+
+    const needsApproval = selectedToken !== 'BNB' && allowance !== undefined && sellAmount
+        ? (allowance as bigint) < parseUnits(sellAmount, selectedTokenData.decimals)
+        : false;
+
+    const calculateStofAmount = (amount: string) => {
+        if (!amount || !stofRate || !selectedTokenData.price) return '';
+        const usdValue = parseFloat(amount) * selectedTokenData.price;
+        const stofAmount = usdValue * Number(formatUnits(stofRate as bigint, 18)); // Assuming 18 decimals for rate
+        return stofAmount.toFixed(2);
     };
 
     const handleSellChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (/^\d*\.?\d*$/.test(value)) {
             setSellAmount(value);
-            const token = tokens[selectedToken as keyof typeof tokens];
-            setBuyAmount(value ? (parseFloat(value) * token.rate).toFixed(2) : '');
+            setBuyAmount(calculateStofAmount(value));
         }
     };
+
+    // Update buy amount when price/rate loads
+    useEffect(() => {
+        if (sellAmount) {
+            setBuyAmount(calculateStofAmount(sellAmount));
+        }
+    }, [bnbPrice, usdtPrice, usdcPrice, stofRate, selectedToken]);
 
     const handleTokenSelect = (tokenStart: string) => {
         setSelectedToken(tokenStart);
         setIsDropdownOpen(false);
-        // Recalculate buy amount with new rate
-        if (sellAmount) {
-            const token = tokens[tokenStart as keyof typeof tokens];
-            setBuyAmount((parseFloat(sellAmount) * token.rate).toFixed(2));
+    };
+
+    const handleApprove = () => {
+        if (selectedTokenData.address && sellAmount) {
+            approve(process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string}`, parseUnits(sellAmount, selectedTokenData.decimals));
         }
     };
 
@@ -107,7 +157,13 @@ const Invest = () => {
                         {/* Video Container with Glow */}
                         <div className="relative w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-stone-dark">
                             {/* <div className="absolute inset-0 bg-stone-cyan/20 blur-3xl rounded-full scale-90 animate-pulse-slow"></div> */}
-                            <img src={"/Coin.gif"} alt="StoneformCoin" className="w-full h-full relative z-10 mix-blend-screen" />
+                            <Image
+                                src="/Coin.gif"
+                                alt="StoneformCoin"
+                                fill
+                                className="relative z-10 mix-blend-screen object-contain"
+                                unoptimized
+                            />
                         </div>
                     </div>
 
@@ -169,7 +225,13 @@ const Invest = () => {
                                                 className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-full px-3 py-1.5 transition-all min-w-[120px] justify-between"
                                             >
                                                 <div className="flex items-center gap-2">
-                                                    <img src={tokens[selectedToken as keyof typeof tokens].image} alt={selectedToken} className="w-6 h-6 rounded-full" />
+                                                    <Image
+                                                        src={tokens[selectedToken as keyof typeof tokens].image}
+                                                        alt={selectedToken}
+                                                        width={24}
+                                                        height={24}
+                                                        className="rounded-full"
+                                                    />
                                                     <span className="font-bold">{selectedToken}</span>
                                                 </div>
                                                 <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -184,7 +246,13 @@ const Invest = () => {
                                                             onClick={() => handleTokenSelect(key)}
                                                             className="w-full flex items-center gap-2 px-3 py-2 hover:bg-white/5 transition-colors text-left"
                                                         >
-                                                            <img src={token.image} alt={token.symbol} className="w-5 h-5 rounded-full" />
+                                                            <Image
+                                                                src={token.image}
+                                                                alt={token.symbol}
+                                                                width={20}
+                                                                height={20}
+                                                                className="rounded-full"
+                                                            />
                                                             <span className="text-sm font-medium">{token.symbol}</span>
                                                         </button>
                                                     ))}
@@ -193,7 +261,7 @@ const Invest = () => {
                                         </div>
                                     </div>
                                     <div className="text-sm text-gray-500 mt-1">
-                                        {sellAmount ? `$${(parseFloat(sellAmount) * tokens[selectedToken as keyof typeof tokens].price).toLocaleString()}` : '$0.00'}
+                                        {sellAmount && selectedTokenData.price ? `$${(parseFloat(sellAmount) * selectedTokenData.price).toLocaleString()}` : '$0.00'}
                                     </div>
                                 </div>
 
@@ -219,13 +287,18 @@ const Invest = () => {
                                         />
                                         <div className="flex items-center gap-2 bg-stone-cyan/10 border border-stone-cyan/20 rounded-full px-3 py-1.5">
                                             <div className="w-6 h-6 rounded-full overflow-hidden bg-stone-dark relative">
-                                                <img src="/StoneformLogo.png" alt="StoneformCoin" className="w-full h-full object-contain mix-blend-lighten" />
+                                                <Image
+                                                    src="/StoneformLogo.png"
+                                                    alt="StoneformCoin"
+                                                    fill
+                                                    className="object-contain mix-blend-lighten"
+                                                />
                                             </div>
                                             <span className="font-bold text-stone-cyan">STOF</span>
                                         </div>
                                     </div>
                                     <div className="text-sm text-gray-500 mt-1 flex justify-between">
-                                        <span>$0.32</span>
+                                        <span>${stofRate ? (1 / Number(formatUnits(stofRate as bigint, 18))).toFixed(4) : '...'}</span>
                                         <span className="text-stone-purple text-xs flex items-center gap-1">
                                             <span className="w-2 h-2 rounded-full bg-stone-purple animate-pulse"></span>
                                             Best Price
@@ -246,9 +319,27 @@ const Invest = () => {
                                         Connect Wallet
                                     </Button>
                                 ) : (
-                                    <Button variant="primary" className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full">
-                                        Buy Now
-                                    </Button>
+                                    <div className="space-y-3">
+                                        {needsApproval ? (
+                                            <Button
+                                                variant="primary"
+                                                onClick={handleApprove}
+                                                disabled={isApproving || isApprovalConfirming}
+                                                className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full"
+                                            >
+                                                {isApproving || isApprovalConfirming ? 'Approving...' : `Approve ${selectedToken}`}
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                variant="primary"
+                                                className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                                                disabled={true}
+                                                title="Trading currently requires backend signature"
+                                            >
+                                                Buy Now (Coming Soon)
+                                            </Button>
+                                        )}
+                                    </div>
                                 )}
                             </div>
 

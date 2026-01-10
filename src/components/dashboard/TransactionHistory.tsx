@@ -13,43 +13,85 @@ interface Transaction {
     hash: string;
 }
 
-const mockTransactions: Transaction[] = [
-    {
-        id: '1',
-        type: 'buy',
-        amount: '5,000',
-        tokenSymbol: 'STOF',
-        cost: '0.25',
-        costSymbol: 'ETH',
-        date: '2024-03-10 14:30',
-        status: 'completed',
-        hash: '0x123...abc'
-    },
-    {
-        id: '2',
-        type: 'buy',
-        amount: '2,500',
-        tokenSymbol: 'STOF',
-        cost: '0.125',
-        costSymbol: 'ETH',
-        date: '2024-03-12 09:15',
-        status: 'completed',
-        hash: '0x456...def'
-    },
-    {
-        id: '3',
-        type: 'buy',
-        amount: '10,000',
-        tokenSymbol: 'STOF',
-        cost: '1,500',
-        costSymbol: 'USDT',
-        date: '2024-03-15 18:45',
-        status: 'pending',
-        hash: '0x789...ghi'
-    }
-];
+import { useAccount, usePublicClient } from 'wagmi';
+import { formatUnits } from 'viem';
+import { useEffect, useState } from 'react';
+import StoneformICOABI from '../../ABI/StoneformICO.json';
+
+interface Transaction {
+    id: string;
+    type: 'buy' | 'claim';
+    amount: string;
+    tokenSymbol: string;
+    cost: string;
+    costSymbol: string;
+    date: string;
+    status: 'completed' | 'pending' | 'failed';
+    hash: string;
+}
 
 const TransactionHistory: React.FC = () => {
+    const { address } = useAccount();
+    const publicClient = usePublicClient();
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchHistory = async () => {
+            if (!address || !publicClient) return;
+
+            setIsLoading(true);
+            try {
+                const currentBlock = await publicClient.getBlockNumber();
+
+                // Get 'TokenBuyed' events (last 9900 blocks to stay within RPC limits)
+                const fromBlock = currentBlock - BigInt(9900);
+
+                const logs = await publicClient.getContractEvents({
+                    address: process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string}`,
+                    abi: StoneformICOABI,
+                    eventName: 'TokenBuyed',
+                    args: {
+                        to: address,
+                    },
+                    fromBlock: fromBlock > BigInt(0) ? fromBlock : BigInt(0),
+                });
+
+
+                const formattedTxs: Transaction[] = await Promise.all(logs.map(async (log) => {
+                    const block = await publicClient.getBlock({ blockHash: log.blockHash });
+                    const date = new Date(Number(block.timestamp) * 1000).toLocaleString();
+
+                    // Note: Event only has 'amount'. 'cost' is not emitted in this event.
+                    // We can either try to fetch transaction receipt or find another event.
+                    // For now, we show 'N/A' for cost or generic symbol.
+
+                    return {
+                        id: log.transactionHash,
+                        type: 'buy',
+                        amount: formatUnits(((log as any).args?.amount) || BigInt(0), 18), // Assuming 18 decimals
+                        tokenSymbol: 'STOF',
+                        cost: '-', // Data unavailable in event
+                        costSymbol: '-',
+                        date: date,
+                        status: 'completed',
+                        hash: log.transactionHash
+                    };
+                }));
+
+                // Sort by date desc
+                setTransactions(formattedTxs.reverse());
+            } catch (error) {
+                console.error("Failed to fetch history:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchHistory();
+    }, [address, publicClient]);
+
+    if (!address) return null;
     return (
         <div className="w-full mt-8">
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
@@ -66,14 +108,28 @@ const TransactionHistory: React.FC = () => {
                             <tr>
                                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
                                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Amount</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Price / Cost</th>
+                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Price</th>
                                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
                                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
                                 <th className="px-6 py-4 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Hash</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
-                            {mockTransactions.map((tx) => (
+                            {isLoading && (
+                                <tr>
+                                    <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                                        Loading transactions...
+                                    </td>
+                                </tr>
+                            )}
+                            {!isLoading && transactions.length === 0 && (
+                                <tr>
+                                    <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                                        No transactions found.
+                                    </td>
+                                </tr>
+                            )}
+                            {transactions.map((tx) => (
                                 <tr key={tx.id} className="hover:bg-white/[0.02] transition-colors group">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center gap-3">
@@ -99,18 +155,23 @@ const TransactionHistory: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium ${tx.status === 'completed'
-                                                ? 'bg-green-500/10 border-green-500/20 text-green-400'
-                                                : tx.status === 'pending'
-                                                    ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400'
-                                                    : 'bg-red-500/10 border-red-500/20 text-red-400'
+                                            ? 'bg-green-500/10 border-green-500/20 text-green-400'
+                                            : tx.status === 'pending'
+                                                ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400'
+                                                : 'bg-red-500/10 border-red-500/20 text-red-400'
                                             }`}>
                                             {tx.status === 'completed' ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
                                             <span className="capitalize">{tx.status}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                                        <a href="#" className="text-stone-cyan hover:text-white transition-colors inline-flex items-center gap-1">
-                                            <span className="font-mono text-sm">{tx.hash}</span>
+                                        <a
+                                            href={`https://bscscan.com/tx/${tx.hash}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-stone-cyan hover:text-white transition-colors inline-flex items-center gap-1"
+                                        >
+                                            <span className="font-mono text-sm">{tx.hash.slice(0, 6)}...{tx.hash.slice(-4)}</span>
                                             <ExternalLink className="w-3 h-3" />
                                         </a>
                                     </td>

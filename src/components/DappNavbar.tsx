@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Menu, X } from 'lucide-react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -24,10 +25,13 @@ const DappNavbar = () => {
 
                     {/* Logo */}
                     <Link href="/" className="flex-shrink-0 flex items-center">
-                        <img
+                        <Image
                             src="/stoneform-text-logo.gif"
                             alt="StoneForm"
-                            className="h-40 w-auto object-contain mix-blend-screen -ml-10"
+                            width={160}
+                            height={80}
+                            className="h-40 w-auto object-contain mix-blend-screen md:-ml-10"
+                            unoptimized
                         />
                     </Link>
 
@@ -61,7 +65,7 @@ const DappNavbar = () => {
 
             {/* Mobile Menu */}
             {isOpen && (
-                <div className="md:hidden bg-black border-t border-white/5 absolute w-full">
+                <div className="md:hidden bg-stone-dark border-t border-white/5 absolute w-full">
                     <div className="px-4 pt-2 pb-6 space-y-2">
                         {navLinks.map((link) => (
                             <Link

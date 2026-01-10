@@ -1,18 +1,77 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Target, TrendingUp, Info } from 'lucide-react';
+import { useStoneformICO } from '../../hooks/useStoneformICO';
+import { formatUnits } from 'viem';
+import { useBalance, useReadContracts } from 'wagmi';
+import StoneformICOABI from '../../ABI/StoneformICO.json';
 
 const PresaleProgress: React.FC = () => {
-    // Mock Data based on requirements
+    // Contract Data
+    const { getTokenAmountPerUSD, ICO_ADDRESS } = useStoneformICO();
+    const { data: stofRate } = getTokenAmountPerUSD();
+
+    // 1. Fetch Payment Token Details (to get addresses for USDT/USDC)
+    const { data: paymentTokens } = useReadContracts({
+        contracts: [
+            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'paymentDetails', args: [BigInt(1)] }, // USDT
+            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'paymentDetails', args: [BigInt(2)] }, // USDC
+        ]
+    });
+
+    // Access result safely
+    const usdtDetails = paymentTokens?.[0]?.result as any;
+    const usdcDetails = paymentTokens?.[1]?.result as any;
+
+    // ABI Returns tuple: [paymentName, priceFetchContract, paymentTokenAddress, decimal, status]
+    const usdtAddress = usdtDetails?.[2];
+    const usdcAddress = usdcDetails?.[2];
+
+    // 2. Fetch Prices (BNB, USDT, USDC)
+    const { data: prices } = useReadContracts({
+        contracts: [
+            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'getLatestPrice', args: [BigInt(0)] }, // BNB
+            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'getLatestPrice', args: [BigInt(1)] }, // USDT
+            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'getLatestPrice', args: [BigInt(2)] }, // USDC
+        ]
+    });
+
+    // 3. Fetch Contract Balances
+    const { data: bnbBalance } = useBalance({ address: ICO_ADDRESS });
+    const { data: usdtBalance } = useBalance({ address: ICO_ADDRESS, token: usdtAddress as `0x${string}` });
+    const { data: usdcBalance } = useBalance({ address: ICO_ADDRESS, token: usdcAddress as `0x${string}` });
+
+    // 4. Calculate Total Raised in USD
+    const totalRaised = useMemo(() => {
+        if (!prices || !bnbBalance) return 8_500_000; // Fallback to mock
+
+        const bnbPrice = Number(formatUnits((prices[0]?.result as bigint) || BigInt(0), 8));
+        const usdtPrice = Number(formatUnits((prices[1]?.result as bigint) || BigInt(0), 8));
+        const usdcPrice = Number(formatUnits((prices[2]?.result as bigint) || BigInt(0), 8));
+
+        const bnbValue = Number(bnbBalance.formatted) * bnbPrice;
+        const usdtValue = Number(usdtBalance?.formatted || 0) * usdtPrice;
+        const usdcValue = Number(usdcBalance?.formatted || 0) * usdcPrice;
+
+        return bnbValue + usdtValue + usdcValue;
+    }, [prices, bnbBalance, usdtBalance, usdcBalance, usdtBalance?.formatted, usdcBalance?.formatted]);
+
+    // Mock Data based on requirements (Not available on-chain)
     const currentStage = 1;
     const totalStages = 6;
     const softCap = 25_000_000; // $25M
     const hardCap = 50_000_000; // $50M
-    const totalRaised = 8_500_000; // Mock current raised amount
-    const currentPrice = 0.32;
+
+    // Calculate price from rate (Rate is tokens per USD, so Price is 1/Rate)
+    const currentPrice = stofRate ? (1 / Number(formatUnits(stofRate as bigint, 18))).toFixed(4) : "0.32";
     const nextPrice = 0.38;
 
     const progressPercentage = (totalRaised / hardCap) * 100;
     const softCapPercentage = (softCap / hardCap) * 100;
+
+    // Display logic for small percentages
+    const displayPercentage = progressPercentage > 0 && progressPercentage < 0.1
+        ? '< 0.1'
+        : progressPercentage.toFixed(1);
 
     return (
         <div className="w-full mb-8">
@@ -52,11 +111,7 @@ const PresaleProgress: React.FC = () => {
                                 <span className="text-2xl font-bold text-white block">${currentPrice}</span>
                                 <span className="text-xs text-stone-cyan">Current</span>
                             </div>
-                            <div className="h-8 w-px bg-white/10"></div>
-                            <div>
-                                <span className="text-2xl font-bold text-gray-400 block">${nextPrice}</span>
-                                <span className="text-xs text-gray-500">Next Stage</span>
-                            </div>
+
                         </div>
                     </div>
 
@@ -84,7 +139,7 @@ const PresaleProgress: React.FC = () => {
                             <span className="text-3xl font-bold text-white tracking-tight">${totalRaised.toLocaleString()}</span>
                         </div>
                         <span className="text-stone-cyan font-bold bg-stone-cyan/10 px-3 py-1 rounded-lg border border-stone-cyan/20">
-                            {progressPercentage.toFixed(1)}%
+                            {displayPercentage}%
                         </span>
                     </div>
 
@@ -104,7 +159,7 @@ const PresaleProgress: React.FC = () => {
                         {/* Animated Gradient Bar */}
                         <div
                             className="absolute top-0 left-0 h-full bg-gradient-to-r from-stone-cyan to-stone-purple rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
-                            style={{ width: `${progressPercentage}%` }}
+                            style={{ width: `${Math.max(progressPercentage, totalRaised > 0 ? 1 : 0)}%` }}
                         >
                             <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]"></div>
                         </div>

@@ -47,7 +47,7 @@ export default function Hero() {
 
             <div className={`relative z-10 flex flex-col items-center justify-center text-center px-4 w-full mx-auto md:mt-[150px] transition-all duration-700 ease-out ${isDashboard ? '' : 'animate-fade-in-up'}`}>
                 <div className="flex items-center justify-center gap-1 sm:gap-4 mb-4 select-none animate-float">
-                    <Image src="/stoneform-texte-logo.png" alt="Stoneform" width={830} height={160} className="drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
+                    <Image src="/stoneformtextlogo.png" alt="Stoneform" width={830} height={160} className="drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
                 </div>
 
 
