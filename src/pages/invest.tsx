@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link'; // Added import
 import Image from 'next/image';
 // import Navbar from '../components/Navbar'; // Removed/Kept existing comment if needed, but logic replaces it
 import Footer from '../components/Footer';
-import { ArrowLeft, Wallet, AlertCircle, Check, Copy, ExternalLink, RefreshCw, X, Settings, ArrowDown, ChevronDown, History as HistoryIcon } from 'lucide-react';
+import { ArrowLeft, Wallet, AlertCircle, Check, Copy, ExternalLink, RefreshCw, X, Settings, ArrowDown, ChevronDown, History as HistoryIcon, ArrowRight } from 'lucide-react';
 import DappNavbar from '../components/DappNavbar'; // Added ArrowLeft
-import { useAccount, useBalance, useSwitchChain } from 'wagmi';
+import { useAccount, useBalance, useSwitchChain, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import Button from '../components/Button';
 import { useStoneformICO } from '../hooks/useStoneformICO';
 import { useTokenContract } from '../hooks/useTokenContract';
 import { formatUnits, parseUnits } from 'viem';
-import { useEffect } from 'react';
+import StoneformICOABI from '../ABI/StoneformICO.json';
+import { generateSignature } from '../utils/signer';
+import { toast } from 'react-hot-toast';
+
 
 const Invest = () => {
     const { address, isConnected, chain } = useAccount();
@@ -56,8 +59,8 @@ const Invest = () => {
     const selectedTokenData = tokens[selectedToken as keyof typeof tokens];
 
     // Approval Logic (for non-native tokens)
-    const { getAllowance, approve, isPending: isApproving, isConfirming: isApprovalConfirming } = useTokenContract(selectedTokenData.address as `0x${string}` || '0x0000000000000000000000000000000000000000');
-    const { data: allowance } = getAllowance(address as `0x${string}`, process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string}`);
+    const { getAllowance, approve, isPending: isApproving, isConfirming: isApprovalConfirming } = useTokenContract(selectedTokenData.address as `0x${string} ` || '0x0000000000000000000000000000000000000000');
+    const { data: allowance } = getAllowance(address as `0x${string} `, process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string} `);
 
     const needsApproval = selectedToken !== 'BNB' && allowance !== undefined && sellAmount
         ? (allowance as bigint) < parseUnits(sellAmount, selectedTokenData.decimals)
@@ -90,9 +93,83 @@ const Invest = () => {
         setIsDropdownOpen(false);
     };
 
+    const { writeContract, isPending: isBuyPending, data: buyTxHash } = useWriteContract();
+
+    // Wait for transaction
+    const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+        hash: buyTxHash,
+    });
+
+    useEffect(() => {
+        if (isConfirmed) {
+            toast.success("Purchase successful! Welcome to Stoneform.");
+        }
+    }, [isConfirmed]);
+
+    const handleBuy = async () => {
+        console.log("handleBuy");
+        if (!isConnected) {
+            openConnectModal?.();
+            return;
+        }
+
+        if (!address || !sellAmount) return;
+
+        const signerKey = process.env.NEXT_PUBLIC_DEV_SIGNER_KEY as `0x${string} `;
+        if (!signerKey) {
+            console.error("Please add NEXT_PUBLIC_DEV_SIGNER_KEY to .env to test buying.");
+            return;
+        }
+
+        try {
+            const amountBigInt = parseUnits(sellAmount, selectedTokenData.decimals);
+
+            // Generate Nonce (random for dev, strictly sequential in prod)
+            const nonce = BigInt(Math.floor(Math.random() * 1000000));
+
+            // Sign (Client-side simulation of Backend)
+            const signature = await generateSignature(
+                selectedTokenData.paymentType,
+                address, // recipient
+                address, // caller
+                amountBigInt,
+                nonce,
+                signerKey
+            );
+
+            // Execute Transaction
+            writeContract({
+                address: process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string} `,
+                abi: StoneformICOABI,
+                functionName: 'buyToken',
+                args: [
+                    address,
+                    BigInt(selectedTokenData.paymentType),
+                    amountBigInt,
+                    scannerSignatureToStruct(signature)
+                ],
+                value: selectedTokenData.symbol === 'BNB' ? amountBigInt : BigInt(0),
+            });
+
+        } catch (error) {
+            console.error("Buy failed:", error);
+            toast.error("Purchase failed. Check console.");
+        }
+    };
+
+    // Helper to format signature for ABI
+    const scannerSignatureToStruct = (sig: any) => ({
+        v: sig.v,
+        r: sig.r,
+        s: sig.s,
+        nonce: sig.nonce
+    });
+
+    const isProcessing = isBuyPending || isConfirming;
+
     const handleApprove = () => {
         if (selectedTokenData.address && sellAmount) {
-            approve(process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string}`, parseUnits(sellAmount, selectedTokenData.decimals));
+            approve(process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string} `, parseUnits(sellAmount, selectedTokenData.decimals));
         }
     };
 
@@ -234,7 +311,7 @@ const Invest = () => {
                                                     />
                                                     <span className="font-bold">{selectedToken}</span>
                                                 </div>
-                                                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                                                <ChevronDown className={`w - 4 h - 4 text - gray - 400 transition - transform ${isDropdownOpen ? 'rotate-180' : ''} `} />
                                             </button>
 
                                             {/* Dropdown Menu */}
@@ -261,7 +338,7 @@ const Invest = () => {
                                         </div>
                                     </div>
                                     <div className="text-sm text-gray-500 mt-1">
-                                        {sellAmount && selectedTokenData.price ? `$${(parseFloat(sellAmount) * selectedTokenData.price).toLocaleString()}` : '$0.00'}
+                                        {sellAmount && selectedTokenData.price ? `$${(parseFloat(sellAmount) * selectedTokenData.price).toLocaleString()} ` : '$0.00'}
                                     </div>
                                 </div>
 
@@ -327,16 +404,19 @@ const Invest = () => {
                                                 disabled={isApproving || isApprovalConfirming}
                                                 className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full"
                                             >
-                                                {isApproving || isApprovalConfirming ? 'Approving...' : `Approve ${selectedToken}`}
+                                                {isApproving || isApprovalConfirming ? 'Approving...' : `Approve ${selectedToken} `}
                                             </Button>
                                         ) : (
                                             <Button
                                                 variant="primary"
-                                                className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full disabled:opacity-50 disabled:cursor-not-allowed"
-                                                disabled={true}
-                                                title="Trading currently requires backend signature"
+                                                className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full disabled:opacity-50 disabled:cursor-not-allowed group"
+                                                disabled={isProcessing || !sellAmount}
+                                                onClick={handleBuy}
                                             >
-                                                Buy Now (Coming Soon)
+                                                <span className="flex items-center justify-center gap-2">
+                                                    {isProcessing ? 'Processing...' : 'Buy Now'}
+                                                    {!isProcessing && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+                                                </span>
                                             </Button>
                                         )}
                                     </div>
