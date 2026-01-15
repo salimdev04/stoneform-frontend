@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Wallet, TrendingUp, Plus, ArrowRight } from 'lucide-react';
 import { useAccount, useBalance } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Button from '../Button';
 import { useRouter } from 'next/navigation';
+import { useStoneformICO } from '../../hooks/useStoneformICO';
+import { formatUnits } from 'viem';
 
 const BalanceCard: React.FC = () => {
     const { address, isConnected } = useAccount();
@@ -13,11 +15,40 @@ const BalanceCard: React.FC = () => {
     const { openConnectModal } = useConnectModal();
     const router = useRouter();
 
-    // Mock data - to be replaced with Wagmi hooks later
-    const balance = "0";
+    const { useGetTokenAddress, useGetTokenAmountPerUSD } = useStoneformICO();
+    const { data: tokenAddress } = useGetTokenAddress();
+    const { data: stofRate } = useGetTokenAmountPerUSD();
+
+    const { data: stofBalance } = useBalance({
+        address: address,
+        token: tokenAddress as `0x${string}`,
+        query: {
+            enabled: !!tokenAddress && !!address,
+        }
+    });
+
+    // Calculate Balance and Value
+    const balance = stofBalance?.formatted ? parseFloat(stofBalance.formatted).toLocaleString(undefined, { maximumFractionDigits: 2 }) : "0";
     const symbol = "STOF";
-    const valueUsd = "0";
-    const changePercentage = "+0%";
+
+    // Calculate Value in USD
+    // Rate is specificed as Tokens per 1 USD (e.g. 50 STOF = 1 USD) -> Price = 1/50 = 0.02
+    // If rate has 18 decimals.
+    const valueUsd = useMemo(() => {
+        if (!stofBalance || !stofRate) return "0.00";
+        try {
+            const tokensPerUsd = Number(formatUnits(stofRate as bigint, 18));
+            if (tokensPerUsd === 0) return "0.00";
+
+            const pricePerToken = 1 / tokensPerUsd;
+            const balanceVal = Number(stofBalance.formatted);
+            return (balanceVal * pricePerToken).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        } catch (e) {
+            return "0.00";
+        }
+    }, [stofBalance, stofRate]);
+
+    const changePercentage = "+0%"; // This requires historical data, keeping mock for now
 
     return (
         <div className="w-full relative overflow-hidden rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-transparent">

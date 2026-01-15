@@ -65,9 +65,12 @@ export default function Navbar() {
                         Invest Now
                     </Button>
                 )}
-                <Button variant="secondary" className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto sm:w-[160px] h-[40px] sm:h-[50px]">
-                    Contact
+                <Button variant="secondary" className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto sm:w-[160px] h-[40px] sm:h-[50px]" onClick={() => window.open('/WhitepaperV4.pdf', '_blank')}>
+                    Whitepaper
                 </Button>
+                {/* <Button variant="secondary" className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto sm:w-[160px] h-[40px] sm:h-[50px]">
+                    Contact
+                </Button> */}
             </div>
         </nav>
     );

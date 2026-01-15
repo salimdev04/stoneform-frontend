@@ -9,7 +9,7 @@ export const useStoneformICO = () => {
     // but in ABI `paymentDetails` takes uint256. 
     // We will expose a generic reader.
 
-    const getPaymentDetails = (paymentType: number) => {
+    const useGetPaymentDetails = (paymentType: number) => {
         return useReadContract({
             address: ICO_ADDRESS,
             abi: StoneformICOABI,
@@ -18,7 +18,7 @@ export const useStoneformICO = () => {
         });
     };
 
-    const getLatestPrice = (paymentType: number) => {
+    const useGetLatestPrice = (paymentType: number) => {
         return useReadContract({
             address: ICO_ADDRESS,
             abi: StoneformICOABI,
@@ -27,11 +27,19 @@ export const useStoneformICO = () => {
         });
     };
 
-    const getTokenAmountPerUSD = () => {
+    const useGetTokenAmountPerUSD = () => {
         return useReadContract({
             address: ICO_ADDRESS,
             abi: StoneformICOABI,
             functionName: 'tokenAmountPerUSD',
+        });
+    };
+
+    const useGetTokenAddress = () => {
+        return useReadContract({
+            address: ICO_ADDRESS,
+            abi: StoneformICOABI,
+            functionName: 'tokenAddress',
         });
     };
 
@@ -40,9 +48,10 @@ export const useStoneformICO = () => {
     // For now we will rely on what is available.
 
     return {
-        getPaymentDetails,
-        getLatestPrice,
-        getTokenAmountPerUSD,
+        useGetPaymentDetails,
+        useGetLatestPrice,
+        useGetTokenAmountPerUSD,
+        useGetTokenAddress,
         ICO_ADDRESS
     };
 };

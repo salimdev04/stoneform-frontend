@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import Link from 'next/link'; // Added import
 import Image from 'next/image';
@@ -10,11 +10,11 @@ import { useAccount, useBalance, useSwitchChain, useReadContract, useWriteContra
 import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import Button from '../components/Button';
 import { useStoneformICO } from '../hooks/useStoneformICO';
-import { useTokenContract } from '../hooks/useTokenContract';
 import { formatUnits, parseUnits } from 'viem';
 import StoneformICOABI from '../ABI/StoneformICO.json';
 import { generateSignature } from '../utils/signer';
 import { toast } from 'react-hot-toast';
+import StatusModal from '../components/StatusModal';
 
 
 const Invest = () => {
@@ -36,14 +36,27 @@ const Invest = () => {
     const [buyAmount, setBuyAmount] = useState('');
     const [selectedToken, setSelectedToken] = useState('BNB');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [lastChangedField, setLastChangedField] = useState<'sell' | 'buy'>('sell');
 
-    const { getLatestPrice, getTokenAmountPerUSD } = useStoneformICO();
+    // Modal State
+    const [modalConfig, setModalConfig] = useState<{
+        isOpen: boolean;
+        status: 'success' | 'error' | 'loading' | null;
+        message: string;
+        txHash?: string;
+    }>({
+        isOpen: false,
+        status: null,
+        message: '',
+    });
+
+    const { useGetLatestPrice, useGetTokenAmountPerUSD } = useStoneformICO();
 
     // Fetch Prices
-    const { data: bnbPrice } = getLatestPrice(0); // Assuming 0 = BNB
-    const { data: usdtPrice } = getLatestPrice(1); // Assuming 1 = USDT
-    const { data: usdcPrice } = getLatestPrice(2); // Assuming 2 = USDC
-    const { data: stofRate } = getTokenAmountPerUSD(); // STOF per USD
+    const { data: bnbPrice } = useGetLatestPrice(0); // Assuming 0 = BNB
+    const { data: usdtPrice } = useGetLatestPrice(1); // Assuming 1 = USDT
+    const { data: usdcPrice } = useGetLatestPrice(2); // Assuming 2 = USDC
+    const { data: stofRate } = useGetTokenAmountPerUSD(); // STOF per USD
 
     // Token Config
     // Note: In a real app, addresses should come from env or contract
@@ -52,19 +65,12 @@ const Invest = () => {
 
     const tokens = {
         BNB: { symbol: 'BNB', paymentType: 0, price: bnbPrice ? Number(formatUnits(bnbPrice as bigint, 8)) : 0, image: '/bnb.webp', address: undefined, decimals: 18 },
-        USDT: { symbol: 'USDT', paymentType: 1, price: usdtPrice ? Number(formatUnits(usdtPrice as bigint, 8)) : 1, image: '/usdt.png', address: USN_ADDRESS, decimals: 18 }, // Check decimals
-        USDC: { symbol: 'USDC', paymentType: 2, price: usdcPrice ? Number(formatUnits(usdcPrice as bigint, 8)) : 1, image: '/usdc.png', address: USDC_ADDRESS, decimals: 18 }, // Check decimals
     };
 
     const selectedTokenData = tokens[selectedToken as keyof typeof tokens];
 
-    // Approval Logic (for non-native tokens)
-    const { getAllowance, approve, isPending: isApproving, isConfirming: isApprovalConfirming } = useTokenContract(selectedTokenData.address as `0x${string} ` || '0x0000000000000000000000000000000000000000');
-    const { data: allowance } = getAllowance(address as `0x${string} `, process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string} `);
-
-    const needsApproval = selectedToken !== 'BNB' && allowance !== undefined && sellAmount
-        ? (allowance as bigint) < parseUnits(sellAmount, selectedTokenData.decimals)
-        : false;
+    // Approval Logic - Not needed for BNB
+    const needsApproval = false;
 
     const calculateStofAmount = (amount: string) => {
         if (!amount || !stofRate || !selectedTokenData.price) return '';
@@ -73,18 +79,54 @@ const Invest = () => {
         return stofAmount.toFixed(2);
     };
 
+    const calculateSellTokenAmount = (amount: string) => {
+        if (!amount || !stofRate || !selectedTokenData.price) return '';
+        // Inverse calculation: amount (STOF) / rate (STOF/USD) = USD Value
+        // USD Value / Price (USD/Token) = Token Amount
+        const rate = Number(formatUnits(stofRate as bigint, 18));
+        if (rate === 0 || selectedTokenData.price === 0) return '';
+
+        const usdValue = parseFloat(amount) / rate;
+        const tokenAmount = usdValue / selectedTokenData.price;
+
+        // Use more precision for crypto amounts, e.g., 6 decimals
+        return tokenAmount.toFixed(6);
+    }
+
+    const handleMax = () => {
+        if (balanceData?.formatted) {
+            const val = balanceData.formatted;
+            setSellAmount(val);
+            setLastChangedField('sell');
+            setBuyAmount(calculateStofAmount(val));
+        }
+    };
+
     const handleSellChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (/^\d*\.?\d*$/.test(value)) {
             setSellAmount(value);
+            setLastChangedField('sell');
             setBuyAmount(calculateStofAmount(value));
         }
     };
 
+    const handleBuyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (/^\d*\.?\d*$/.test(value)) {
+            setBuyAmount(value);
+            setLastChangedField('buy');
+            setSellAmount(calculateSellTokenAmount(value));
+        }
+    };
+
     // Update buy amount when price/rate loads
+    // Update amounts when price/rate loads or token changes
     useEffect(() => {
-        if (sellAmount) {
+        if (lastChangedField === 'sell' && sellAmount) {
             setBuyAmount(calculateStofAmount(sellAmount));
+        } else if (lastChangedField === 'buy' && buyAmount) {
+            setSellAmount(calculateSellTokenAmount(buyAmount));
         }
     }, [bnbPrice, usdtPrice, usdcPrice, stofRate, selectedToken]);
 
@@ -93,18 +135,46 @@ const Invest = () => {
         setIsDropdownOpen(false);
     };
 
-    const { writeContract, isPending: isBuyPending, data: buyTxHash } = useWriteContract();
+    const { writeContract, isPending: isBuyPending, isError: isBuyError, error: buyError, data: buyTxHash } = useWriteContract();
 
     // Wait for transaction
-    const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    const { isLoading: isConfirming, isSuccess: isConfirmed, isError: isConfirmError, error: confirmError } = useWaitForTransactionReceipt({
         hash: buyTxHash,
     });
 
     useEffect(() => {
         if (isConfirmed) {
+            setModalConfig({
+                isOpen: true,
+                status: 'success',
+                message: `You have successfully purchased ${buyAmount} STOF tokens!`,
+                txHash: buyTxHash
+            });
             toast.success("Purchase successful! Welcome to Stoneform.");
         }
-    }, [isConfirmed]);
+    }, [isConfirmed, buyAmount, buyTxHash]);
+
+    useEffect(() => {
+        if (isBuyError || isConfirmError) {
+            const error = buyError || confirmError;
+            setModalConfig({
+                isOpen: true,
+                status: 'error',
+                message: (error as any)?.shortMessage || error?.message || "Something went wrong. Please check your wallet and try again.",
+            });
+        }
+    }, [isBuyError, isConfirmError, buyError, confirmError]);
+
+    useEffect(() => {
+        if (isConfirming) {
+            setModalConfig({
+                isOpen: true,
+                status: 'loading',
+                message: 'Transaction is being confirmed on the blockchain...',
+                txHash: buyTxHash
+            });
+        }
+    }, [isConfirming, buyTxHash]);
 
     const handleBuy = async () => {
         console.log("handleBuy");
@@ -114,6 +184,12 @@ const Invest = () => {
         }
 
         if (!address || !sellAmount) return;
+
+        setModalConfig({
+            isOpen: true,
+            status: 'loading',
+            message: 'Waiting for folder confirmation and transaction processing...',
+        });
 
         const signerKey = process.env.NEXT_PUBLIC_DEV_SIGNER_KEY as `0x${string} `;
         if (!signerKey) {
@@ -151,8 +227,13 @@ const Invest = () => {
                 value: selectedTokenData.symbol === 'BNB' ? amountBigInt : BigInt(0),
             });
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("Buy failed:", error);
+            setModalConfig({
+                isOpen: true,
+                status: 'error',
+                message: error?.message || "Something went wrong. Please check your wallet and try again.",
+            });
             toast.error("Purchase failed. Check console.");
         }
     };
@@ -167,11 +248,6 @@ const Invest = () => {
 
     const isProcessing = isBuyPending || isConfirming;
 
-    const handleApprove = () => {
-        if (selectedTokenData.address && sellAmount) {
-            approve(process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string} `, parseUnits(sellAmount, selectedTokenData.decimals));
-        }
-    };
 
     return (
         <div className="flex flex-col min-h-screen bg-stone-dark text-white overflow-x-hidden">
@@ -183,40 +259,7 @@ const Invest = () => {
 
             <DappNavbar />
 
-            {/* Custom Header for Invest Page */}
-            {/* <header className="absolute top-0 left-0 right-0 z-50 py-6 flex items-center justify-between max-w-7xl mx-auto w-full">
-                <Link href="/" className="flex items-center gap-2 group">
-                    <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                        <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
-                    </div>
-                    <span className="text-gray-400 group-hover:text-white font-medium transition-colors hidden sm:block">Back to Home</span>
-                </Link>
-
-                <div>
-                    {!isConnected ? (
-                        <button
-                            onClick={openConnectModal}
-                            className="bg-stone-cyan/10 hover:bg-stone-cyan/20 text-stone-cyan border border-stone-cyan/20 py-2 px-4 rounded-xl font-bold transition-all flex items-center gap-2"
-                        >
-                            <Wallet className="w-4 h-4" />
-                            Connect Wallet
-                        </button>
-                    ) : (
-                        <div className='flex'>
-                            <ConnectButton showBalance={false} accountStatus="address" chainStatus="none" />
-                            <Button variant="secondary" className="!py-2 ml-4 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto sm:w-[160px] h-[40px] sm:h-[50px]">
-                                Contact
-                            </Button>
-                        </div>
-                    )}
-                </div>
-            </header> */}
-
             <main className="flex-grow flex items-center justify-center relative mt-32 pt-24 pb-12 px-4 md:px-8">
-                {/* Background Elements */}
-                {/* <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0a0a2e] via-stone-dark to-stone-dark opacity-60"></div> */}
-                {/* <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-stone-cyan/10 blur-[120px] rounded-full pointer-events-none"></div> */}
-                {/* <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-stone-purple/10 blur-[120px] rounded-full pointer-events-none"></div> */}
 
                 <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
 
@@ -283,9 +326,14 @@ const Invest = () => {
                                 <div className="bg-black/20 rounded-2xl p-4 hover:ring-1 hover:ring-white/10 transition-all z-20 relative">
                                     <div className="flex justify-between mb-2">
                                         <span className="text-sm text-gray-400">You sell</span>
-                                        <div className="flex items-center gap-2 opacity-50">
-                                            <span className="text-xs text-gray-500">Balance: 0</span>
-                                            <button className="text-xs text-stone-cyan font-bold hover:text-stone-cyan/80">MAX</button>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-gray-500">Balance: {balanceData?.formatted ? parseFloat(balanceData.formatted).toFixed(4) : '0'}</span>
+                                            <button
+                                                onClick={handleMax}
+                                                className="text-xs text-stone-cyan font-bold hover:text-stone-cyan/80 transition-colors"
+                                            >
+                                                MAX
+                                            </button>
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between gap-4">
@@ -298,8 +346,8 @@ const Invest = () => {
                                         />
                                         <div className="relative">
                                             <button
-                                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                                className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-full px-3 py-1.5 transition-all min-w-[120px] justify-between"
+                                                disabled={true}
+                                                className="flex items-center gap-2 bg-white/5 border border-white/5 rounded-full px-3 py-1.5 transition-all min-w-[120px] justify-between cursor-default"
                                             >
                                                 <div className="flex items-center gap-2">
                                                     <Image
@@ -311,30 +359,8 @@ const Invest = () => {
                                                     />
                                                     <span className="font-bold">{selectedToken}</span>
                                                 </div>
-                                                <ChevronDown className={`w - 4 h - 4 text - gray - 400 transition - transform ${isDropdownOpen ? 'rotate-180' : ''} `} />
                                             </button>
 
-                                            {/* Dropdown Menu */}
-                                            {isDropdownOpen && (
-                                                <div className="absolute top-full right-0 mt-2 w-full min-w-[120px] bg-[#1A1A2E] border border-white/10 rounded-xl shadow-xl overflow-hidden animate-fade-in z-50">
-                                                    {Object.entries(tokens).map(([key, token]) => (
-                                                        <button
-                                                            key={key}
-                                                            onClick={() => handleTokenSelect(key)}
-                                                            className="w-full flex items-center gap-2 px-3 py-2 hover:bg-white/5 transition-colors text-left"
-                                                        >
-                                                            <Image
-                                                                src={token.image}
-                                                                alt={token.symbol}
-                                                                width={20}
-                                                                height={20}
-                                                                className="rounded-full"
-                                                            />
-                                                            <span className="text-sm font-medium">{token.symbol}</span>
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            )}
                                         </div>
                                     </div>
                                     <div className="text-sm text-gray-500 mt-1">
@@ -358,9 +384,9 @@ const Invest = () => {
                                         <input
                                             type="text"
                                             value={buyAmount}
-                                            readOnly
+                                            onChange={handleBuyChange}
                                             placeholder="0"
-                                            className="bg-transparent text-3xl font-bold text-stone-cyan outline-none w-full placeholder-gray-600 cursor-default"
+                                            className="bg-transparent text-3xl font-bold text-stone-cyan outline-none w-full placeholder-gray-600"
                                         />
                                         <div className="flex items-center gap-2 bg-stone-cyan/10 border border-stone-cyan/20 rounded-full px-3 py-1.5">
                                             <div className="w-6 h-6 rounded-full overflow-hidden bg-stone-dark relative">
@@ -375,7 +401,7 @@ const Invest = () => {
                                         </div>
                                     </div>
                                     <div className="text-sm text-gray-500 mt-1 flex justify-between">
-                                        <span>${stofRate ? (1 / Number(formatUnits(stofRate as bigint, 18))).toFixed(4) : '...'}</span>
+                                        <span>${stofRate ? (1 / Number(formatUnits(stofRate as bigint, 18))).toFixed(2) : '...'}</span>
                                         <span className="text-stone-purple text-xs flex items-center gap-1">
                                             <span className="w-2 h-2 rounded-full bg-stone-purple animate-pulse"></span>
                                             Best Price
@@ -397,28 +423,17 @@ const Invest = () => {
                                     </Button>
                                 ) : (
                                     <div className="space-y-3">
-                                        {needsApproval ? (
-                                            <Button
-                                                variant="primary"
-                                                onClick={handleApprove}
-                                                disabled={isApproving || isApprovalConfirming}
-                                                className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full"
-                                            >
-                                                {isApproving || isApprovalConfirming ? 'Approving...' : `Approve ${selectedToken} `}
-                                            </Button>
-                                        ) : (
-                                            <Button
-                                                variant="primary"
-                                                className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full disabled:opacity-50 disabled:cursor-not-allowed group"
-                                                disabled={isProcessing || !sellAmount}
-                                                onClick={handleBuy}
-                                            >
-                                                <span className="flex items-center justify-center gap-2">
-                                                    {isProcessing ? 'Processing...' : 'Buy Now'}
-                                                    {!isProcessing && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
-                                                </span>
-                                            </Button>
-                                        )}
+                                        <Button
+                                            variant="primary"
+                                            className="!py-2 !px-4 !text-sm sm:!py-[8px] sm:!px-[24px] sm:!text-[21px] w-auto h-[60px] w-full disabled:opacity-50 disabled:cursor-not-allowed group"
+                                            disabled={isProcessing || !sellAmount}
+                                            onClick={handleBuy}
+                                        >
+                                            <span className="flex items-center justify-center gap-2">
+                                                {isProcessing ? 'Processing...' : 'Buy Now'}
+                                                {!isProcessing && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+                                            </span>
+                                        </Button>
                                     </div>
                                 )}
                             </div>
@@ -438,6 +453,14 @@ const Invest = () => {
             </section>
 
             <Footer />
+
+            <StatusModal
+                isOpen={modalConfig.isOpen}
+                onClose={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
+                status={modalConfig.status}
+                message={modalConfig.message}
+                txHash={modalConfig.txHash}
+            />
         </div>
     );
 };

@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Menu, X } from 'lucide-react';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const DappNavbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +13,7 @@ const DappNavbar = () => {
     const navLinks = [
         { name: 'Dashboard', href: '/dashboard' },
         { name: 'Invest Now', href: '/invest' },
+        { name: "Whitepaper", href: "/WhitepaperV4.pdf" },
         { name: 'Contact', href: 'mailto:contact@stoneform.io' }, // Assuming contact is mailto or a page, user didn't specify page
     ];
 

@@ -15,7 +15,8 @@ interface Transaction {
 
 import { useAccount, usePublicClient } from 'wagmi';
 import { formatUnits } from 'viem';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { useStoneformICO } from '../../hooks/useStoneformICO';
 import StoneformICOABI from '../../ABI/StoneformICO.json';
 
 interface Transaction {
@@ -33,8 +34,16 @@ interface Transaction {
 const TransactionHistory: React.FC = () => {
     const { address } = useAccount();
     const publicClient = usePublicClient();
+    const { useGetTokenAmountPerUSD } = useStoneformICO();
+    const { data: stofRate } = useGetTokenAmountPerUSD();
+
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+
+    const tokenPrice = useMemo(() => {
+        if (!stofRate) return 0;
+        return 1 / Number(formatUnits(stofRate as bigint, 18));
+    }, [stofRate]);
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -61,18 +70,15 @@ const TransactionHistory: React.FC = () => {
                 const formattedTxs: Transaction[] = await Promise.all(logs.map(async (log) => {
                     const block = await publicClient.getBlock({ blockHash: log.blockHash });
                     const date = new Date(Number(block.timestamp) * 1000).toLocaleString();
-
-                    // Note: Event only has 'amount'. 'cost' is not emitted in this event.
-                    // We can either try to fetch transaction receipt or find another event.
-                    // For now, we show 'N/A' for cost or generic symbol.
+                    const amount = formatUnits(((log as any).args?.amount) || BigInt(0), 18);
 
                     return {
                         id: log.transactionHash,
                         type: 'buy',
-                        amount: formatUnits(((log as any).args?.amount) || BigInt(0), 18), // Assuming 18 decimals
+                        amount: parseFloat(amount).toFixed(2),
                         tokenSymbol: 'STOF',
-                        cost: '-', // Data unavailable in event
-                        costSymbol: '-',
+                        cost: tokenPrice ? (Number(amount) * tokenPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-',
+                        costSymbol: '$',
                         date: date,
                         status: 'completed',
                         hash: log.transactionHash
@@ -145,9 +151,10 @@ const TransactionHistory: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex flex-col">
-                                            <span className="text-gray-300">{tx.cost} {tx.costSymbol}</span>
-                                            {/* Mock calculation for price per token if needed, or just static */}
-                                            {/* <span className="text-xs text-gray-500">$0.32 / token</span> */}
+                                            <span className="text-white font-medium">{tx.costSymbol}{tx.cost}</span>
+                                            {tokenPrice > 0 && (
+                                                <span className="text-[10px] text-gray-500">${tokenPrice.toFixed(4)} / STOF</span>
+                                            )}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">

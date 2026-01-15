@@ -7,8 +7,8 @@ import StoneformICOABI from '../../ABI/StoneformICO.json';
 
 const PresaleProgress: React.FC = () => {
     // Contract Data
-    const { getTokenAmountPerUSD, ICO_ADDRESS } = useStoneformICO();
-    const { data: stofRate } = getTokenAmountPerUSD();
+    const { useGetTokenAmountPerUSD, ICO_ADDRESS } = useStoneformICO();
+    const { data: stofRate } = useGetTokenAmountPerUSD();
 
     // 1. Fetch Payment Token Details (to get addresses for USDT/USDC)
     const { data: paymentTokens } = useReadContracts({
@@ -63,7 +63,7 @@ const PresaleProgress: React.FC = () => {
 
     // Calculate price from rate (Rate is tokens per USD, so Price is 1/Rate)
     const currentPrice = stofRate ? (1 / Number(formatUnits(stofRate as bigint, 18))).toFixed(4) : "0.32";
-    const nextPrice = 0.38;
+    const nextPrice = 0.06;
 
     const progressPercentage = (totalRaised / hardCap) * 100;
     const softCapPercentage = (softCap / hardCap) * 100;
@@ -110,6 +110,11 @@ const PresaleProgress: React.FC = () => {
                             <div>
                                 <span className="text-2xl font-bold text-white block">${currentPrice}</span>
                                 <span className="text-xs text-stone-cyan">Current</span>
+                            </div>
+                            <div className="w-[1px] h-16 bg-white/10"></div>
+                            <div>
+                                <span className="text-lg font-bold text-gray-400 block">${nextPrice}</span>
+                                <span className="text-xs text-gray-400">Next stage</span>
                             </div>
 
                         </div>

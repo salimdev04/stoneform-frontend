@@ -8,7 +8,7 @@ export const useTokenContract = (tokenAddress: `0x${string}`) => {
         hash,
     });
 
-    const getBalance = (address: `0x${string}`) => {
+    const useGetBalance = (address: `0x${string}`) => {
         return useReadContract({
             address: tokenAddress,
             abi: erc20Abi,
@@ -17,7 +17,7 @@ export const useTokenContract = (tokenAddress: `0x${string}`) => {
         });
     };
 
-    const getAllowance = (owner: `0x${string}`, spender: `0x${string}`) => {
+    const useGetAllowance = (owner: `0x${string}`, spender: `0x${string}`) => {
         return useReadContract({
             address: tokenAddress,
             abi: erc20Abi,
@@ -36,8 +36,8 @@ export const useTokenContract = (tokenAddress: `0x${string}`) => {
     };
 
     return {
-        getBalance,
-        getAllowance,
+        useGetBalance,
+        useGetAllowance,
         approve,
         isPending,
         isConfirming,
