@@ -15,9 +15,9 @@ const BalanceCard: React.FC = () => {
     const { openConnectModal } = useConnectModal();
     const router = useRouter();
 
-    const { useGetTokenAddress, useGetTokenAmountPerUSD } = useStoneformICO();
-    const { data: tokenAddress } = useGetTokenAddress();
-    const { data: stofRate } = useGetTokenAmountPerUSD();
+    const { useGetSaleToken, useGetTokenPerUSD } = useStoneformICO();
+    const { data: tokenAddress } = useGetSaleToken();
+    const { data: stofRate } = useGetTokenPerUSD();
 
     const { data: stofBalance } = useBalance({
         address: address,

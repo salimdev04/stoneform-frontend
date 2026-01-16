@@ -7,38 +7,45 @@ import StoneformICOABI from '../../ABI/StoneformICO.json';
 
 const PresaleProgress: React.FC = () => {
     // Contract Data
-    const { useGetTokenAmountPerUSD, ICO_ADDRESS } = useStoneformICO();
-    const { data: stofRate } = useGetTokenAmountPerUSD();
+    const { useGetTokenPerUSD, ICO_ADDRESS, useGetOraclePrice } = useStoneformICO();
+    const { data: stofRate } = useGetTokenPerUSD();
 
     // 1. Fetch Payment Token Details (to get addresses for USDT/USDC)
     const { data: paymentTokens } = useReadContracts({
         contracts: [
-            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'paymentDetails', args: [BigInt(1)] }, // USDT
-            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'paymentDetails', args: [BigInt(2)] }, // USDC
+            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'paymentTokens', args: [BigInt(0)] }, // BNB
+            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'paymentTokens', args: [BigInt(1)] }, // USDT
+            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'paymentTokens', args: [BigInt(2)] }, // USDC
         ]
     });
 
     // Access result safely
-    const usdtDetails = paymentTokens?.[0]?.result as any;
-    const usdcDetails = paymentTokens?.[1]?.result as any;
+    const bnbDetails = paymentTokens?.[0]?.result as any;
+    const usdtDetails = paymentTokens?.[1]?.result as any;
+    const usdcDetails = paymentTokens?.[2]?.result as any;
 
-    // ABI Returns tuple: [paymentName, priceFetchContract, paymentTokenAddress, decimal, status]
+    const bnbOracle = bnbDetails?.[1];
+    const usdtOracle = usdtDetails?.[1];
+    const usdcOracle = usdcDetails?.[1];
+
     const usdtAddress = usdtDetails?.[2];
     const usdcAddress = usdcDetails?.[2];
 
-    // 2. Fetch Prices (BNB, USDT, USDC)
-    const { data: prices } = useReadContracts({
-        contracts: [
-            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'getLatestPrice', args: [BigInt(0)] }, // BNB
-            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'getLatestPrice', args: [BigInt(1)] }, // USDT
-            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'getLatestPrice', args: [BigInt(2)] }, // USDC
-        ]
-    });
+    const { data: bnbOracleData } = useGetOraclePrice(bnbOracle);
+    const { data: usdtOracleData } = useGetOraclePrice(usdtOracle);
+    const { data: usdcOracleData } = useGetOraclePrice(usdcOracle);
+
+    // 2. Fetch Prices
+    const prices = [
+        { result: bnbOracleData?.[1] || BigInt(93000000000) }, // BNB
+        { result: usdtOracleData?.[1] || BigInt(100000000) },  // USDT
+        { result: usdcOracleData?.[1] || BigInt(100000000) },  // USDC
+    ];
 
     // 3. Fetch Contract Balances
     const { data: bnbBalance } = useBalance({ address: ICO_ADDRESS });
-    const { data: usdtBalance } = useBalance({ address: ICO_ADDRESS, token: usdtAddress as `0x${string}` });
-    const { data: usdcBalance } = useBalance({ address: ICO_ADDRESS, token: usdcAddress as `0x${string}` });
+    const { data: usdtBalance } = useBalance({ address: ICO_ADDRESS, token: usdtAddress as `0x${string}`, query: { enabled: !!usdtAddress && usdtAddress !== '0x0000000000000000000000000000000000000000' } });
+    const { data: usdcBalance } = useBalance({ address: ICO_ADDRESS, token: usdcAddress as `0x${string}`, query: { enabled: !!usdcAddress && usdcAddress !== '0x0000000000000000000000000000000000000000' } });
 
     // 4. Calculate Total Raised in USD
     const totalRaised = useMemo(() => {
@@ -53,7 +60,7 @@ const PresaleProgress: React.FC = () => {
         const usdcValue = Number(usdcBalance?.formatted || 0) * usdcPrice;
 
         return bnbValue + usdtValue + usdcValue;
-    }, [prices, bnbBalance, usdtBalance, usdcBalance, usdtBalance?.formatted, usdcBalance?.formatted]);
+    }, [prices, bnbBalance, usdtBalance, usdcBalance]);
 
     // Mock Data based on requirements (Not available on-chain)
     const currentStage = 1;
@@ -62,7 +69,7 @@ const PresaleProgress: React.FC = () => {
     const hardCap = 50_000_000; // $50M
 
     // Calculate price from rate (Rate is tokens per USD, so Price is 1/Rate)
-    const currentPrice = stofRate ? (1 / Number(formatUnits(stofRate as bigint, 18))).toFixed(4) : "0.32";
+    const currentPrice = stofRate ? (1 / Number(formatUnits(stofRate as bigint, 18))).toFixed(4) : "0.003";
     const nextPrice = 0.06;
 
     const progressPercentage = (totalRaised / hardCap) * 100;

@@ -50,18 +50,16 @@ const Invest = () => {
         message: '',
     });
 
-    const { useGetLatestPrice, useGetTokenAmountPerUSD } = useStoneformICO();
+    const { useGetTokenPerUSD, useGetPaymentTokens, useGetOraclePrice } = useStoneformICO();
+
+    // Fetch BNB Details & Price
+    const { data: bnbDetails } = useGetPaymentTokens(0);
+    const bnbOracle = bnbDetails?.[1] as `0x${string}`;
+    const { data: bnbOracleData } = useGetOraclePrice(bnbOracle);
 
     // Fetch Prices
-    const { data: bnbPrice } = useGetLatestPrice(0); // Assuming 0 = BNB
-    const { data: usdtPrice } = useGetLatestPrice(1); // Assuming 1 = USDT
-    const { data: usdcPrice } = useGetLatestPrice(2); // Assuming 2 = USDC
-    const { data: stofRate } = useGetTokenAmountPerUSD(); // STOF per USD
-
-    // Token Config
-    // Note: In a real app, addresses should come from env or contract
-    const USN_ADDRESS = "0x0000000000000000000000000000000000000000"; // Replace with real
-    const USDC_ADDRESS = "0x0000000000000000000000000000000000000000"; // Replace with real
+    const bnbPrice = bnbOracleData?.[1] ? bnbOracleData[1] : BigInt(60000000000); // Fallback to $600 if oracle fails
+    const { data: stofRate } = useGetTokenPerUSD(); // STOF per USD
 
     const tokens = {
         BNB: { symbol: 'BNB', paymentType: 0, price: bnbPrice ? Number(formatUnits(bnbPrice as bigint, 8)) : 0, image: '/bnb.webp', address: undefined, decimals: 18 },
@@ -74,23 +72,32 @@ const Invest = () => {
 
     const calculateStofAmount = (amount: string) => {
         if (!amount || !stofRate || !selectedTokenData.price) return '';
-        const usdValue = parseFloat(amount) * selectedTokenData.price;
-        const stofAmount = usdValue * Number(formatUnits(stofRate as bigint, 18)); // Assuming 18 decimals for rate
-        return stofAmount.toFixed(2);
+        try {
+            const usdValue = parseFloat(amount) * selectedTokenData.price;
+            const rate = Number(formatUnits(stofRate as bigint, 18));
+            const stofAmount = usdValue * rate;
+            return stofAmount.toFixed(2);
+        } catch (e) {
+            return '';
+        }
     };
 
     const calculateSellTokenAmount = (amount: string) => {
         if (!amount || !stofRate || !selectedTokenData.price) return '';
-        // Inverse calculation: amount (STOF) / rate (STOF/USD) = USD Value
-        // USD Value / Price (USD/Token) = Token Amount
-        const rate = Number(formatUnits(stofRate as bigint, 18));
-        if (rate === 0 || selectedTokenData.price === 0) return '';
+        try {
+            // Inverse calculation: amount (STOF) / rate (STOF/USD) = USD Value
+            // USD Value / Price (USD/Token) = Token Amount
+            const rate = Number(formatUnits(stofRate as bigint, 18));
+            if (rate === 0 || selectedTokenData.price === 0) return '';
 
-        const usdValue = parseFloat(amount) / rate;
-        const tokenAmount = usdValue / selectedTokenData.price;
+            const usdValue = parseFloat(amount) / rate;
+            const tokenAmount = usdValue / selectedTokenData.price;
 
-        // Use more precision for crypto amounts, e.g., 6 decimals
-        return tokenAmount.toFixed(6);
+            // Use more precision for crypto amounts, e.g., 6 decimals
+            return tokenAmount.toFixed(6);
+        } catch (e) {
+            return '';
+        }
     }
 
     const handleMax = () => {
@@ -120,7 +127,6 @@ const Invest = () => {
         }
     };
 
-    // Update buy amount when price/rate loads
     // Update amounts when price/rate loads or token changes
     useEffect(() => {
         if (lastChangedField === 'sell' && sellAmount) {
@@ -128,7 +134,7 @@ const Invest = () => {
         } else if (lastChangedField === 'buy' && buyAmount) {
             setSellAmount(calculateSellTokenAmount(buyAmount));
         }
-    }, [bnbPrice, usdtPrice, usdcPrice, stofRate, selectedToken]);
+    }, [bnbPrice, stofRate, selectedToken]);
 
     const handleTokenSelect = (tokenStart: string) => {
         setSelectedToken(tokenStart);
@@ -157,6 +163,7 @@ const Invest = () => {
     useEffect(() => {
         if (isBuyError || isConfirmError) {
             const error = buyError || confirmError;
+            console.error("Transaction Error:", error);
             setModalConfig({
                 isOpen: true,
                 status: 'error',
@@ -191,7 +198,7 @@ const Invest = () => {
             message: 'Waiting for folder confirmation and transaction processing...',
         });
 
-        const signerKey = process.env.NEXT_PUBLIC_DEV_SIGNER_KEY as `0x${string} `;
+        const signerKey = process.env.NEXT_PUBLIC_DEV_SIGNER_KEY as `0x${string}`;
         if (!signerKey) {
             console.error("Please add NEXT_PUBLIC_DEV_SIGNER_KEY to .env to test buying.");
             return;
@@ -213,11 +220,18 @@ const Invest = () => {
                 signerKey
             );
 
-            // Execute Transaction
+            console.log("Transaction Args:", {
+                recipient: address,
+                paymentType: BigInt(selectedTokenData.paymentType),
+                amountPaid: amountBigInt,
+                signature: scannerSignatureToStruct(signature),
+                value: selectedTokenData.symbol === 'BNB' ? amountBigInt : BigInt(0)
+            });
+
             writeContract({
-                address: process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string} `,
+                address: process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string}`,
                 abi: StoneformICOABI,
-                functionName: 'buyToken',
+                functionName: 'buy',
                 args: [
                     address,
                     BigInt(selectedTokenData.paymentType),

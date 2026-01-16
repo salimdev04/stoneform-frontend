@@ -1,57 +1,53 @@
 import { useReadContract } from 'wagmi';
 import StoneformICOABI from '../ABI/StoneformICO.json';
+import AggregatorV3ABI from '../ABI/AggregatorV3.json';
 
 const ICO_ADDRESS = process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string}`;
 
 export const useStoneformICO = () => {
-    // Helper to get formatted payment type
-    // Assuming 0 = BNB, 1 = USDT, 2 = USDC based on typical patterns, 
-    // but in ABI `paymentDetails` takes uint256. 
     // We will expose a generic reader.
 
-    const useGetPaymentDetails = (paymentType: number) => {
+    const useGetPaymentTokens = (paymentType: number) => {
         return useReadContract({
             address: ICO_ADDRESS,
             abi: StoneformICOABI,
-            functionName: 'paymentDetails',
+            functionName: 'paymentTokens',
             args: [BigInt(paymentType)],
-        });
+        }) as { data: [string, `0x${string}`, `0x${string}`, bigint, boolean] | undefined };
     };
 
-    const useGetLatestPrice = (paymentType: number) => {
+    const useGetTokenPerUSD = () => {
         return useReadContract({
             address: ICO_ADDRESS,
             abi: StoneformICOABI,
-            functionName: 'getLatestPrice',
-            args: [BigInt(paymentType)],
-        });
+            functionName: 'tokenPerUSD',
+        }) as { data: bigint | undefined };
     };
 
-    const useGetTokenAmountPerUSD = () => {
+    const useGetSaleToken = () => {
         return useReadContract({
             address: ICO_ADDRESS,
             abi: StoneformICOABI,
-            functionName: 'tokenAmountPerUSD',
-        });
+            functionName: 'saleToken',
+        }) as { data: `0x${string}` | undefined };
     };
 
-    const useGetTokenAddress = () => {
+    const useGetOraclePrice = (oracleAddress: `0x${string}`) => {
         return useReadContract({
-            address: ICO_ADDRESS,
-            abi: StoneformICOABI,
-            functionName: 'tokenAddress',
-        });
+            address: oracleAddress,
+            abi: AggregatorV3ABI,
+            functionName: 'latestRoundData',
+            query: {
+                enabled: !!oracleAddress && oracleAddress !== '0x0000000000000000000000000000000000000000',
+            }
+        }) as { data: [bigint, bigint, bigint, bigint, bigint] | undefined };
     };
-
-    // Note: Total Raised is not directly available in standard view functions of this ABI.
-    // We might need to listen to events or use an indexing service later.
-    // For now we will rely on what is available.
 
     return {
-        useGetPaymentDetails,
-        useGetLatestPrice,
-        useGetTokenAmountPerUSD,
-        useGetTokenAddress,
+        useGetPaymentTokens,
+        useGetTokenPerUSD,
+        useGetSaleToken,
+        useGetOraclePrice,
         ICO_ADDRESS
     };
 };

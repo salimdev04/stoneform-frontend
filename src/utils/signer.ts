@@ -15,12 +15,21 @@ export const generateSignature = async (
     signerPrivateKey: `0x${string}`
 ) => {
     // 1. Replicate Solidity's keccak256(abi.encodePacked(assetType, recipient, caller, amount, sign.nonce))
+    console.log("Signing Data:", {
+        paymentType,
+        recipient,
+        caller,
+        amount: amount.toString(),
+        nonce: nonce.toString()
+    });
+
     const encoded = encodePacked(
         ['uint256', 'address', 'address', 'uint256', 'uint256'],
         [BigInt(paymentType), recipient as `0x${string}`, caller as `0x${string}`, amount, nonce]
     );
 
     const hash = keccak256(encoded);
+    console.log("Generated Hash:", hash);
 
     // 2. Sign the hash
     // Solidity: signer == ecrecover(keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)), ...)

@@ -34,8 +34,8 @@ interface Transaction {
 const TransactionHistory: React.FC = () => {
     const { address } = useAccount();
     const publicClient = usePublicClient();
-    const { useGetTokenAmountPerUSD } = useStoneformICO();
-    const { data: stofRate } = useGetTokenAmountPerUSD();
+    const { useGetTokenPerUSD } = useStoneformICO();
+    const { data: stofRate } = useGetTokenPerUSD();
 
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -59,9 +59,9 @@ const TransactionHistory: React.FC = () => {
                 const logs = await publicClient.getContractEvents({
                     address: process.env.NEXT_PUBLIC_STONEFORM_ICO_ADDRESS as `0x${string}`,
                     abi: StoneformICOABI,
-                    eventName: 'TokenBuyed',
+                    eventName: 'TokensPurchased',
                     args: {
-                        to: address,
+                        recipient: address,
                     },
                     fromBlock: fromBlock > BigInt(0) ? fromBlock : BigInt(0),
                 });

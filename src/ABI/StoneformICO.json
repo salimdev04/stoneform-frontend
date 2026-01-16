@@ -1,730 +1,780 @@
 [
     {
+        "type": "constructor",
         "inputs": [
             {
-                "internalType": "address",
-                "name": "_ownerAddress",
-                "type": "address"
+                "name": "multisigAdmin",
+                "type": "address",
+                "internalType": "address"
             },
             {
-                "internalType": "address",
-                "name": "_signerAddress",
-                "type": "address"
+                "name": "signer",
+                "type": "address",
+                "internalType": "address"
             },
             {
-                "internalType": "contract IERC20",
-                "name": "_tokenAddress",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
-        "inputs": [],
-        "name": "AccessControlBadConfirmation",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
+                "name": "_saleToken",
+                "type": "address",
+                "internalType": "contract IERC20"
             },
             {
-                "internalType": "bytes32",
-                "name": "neededRole",
-                "type": "bytes32"
+                "name": "_tokenPerUSD",
+                "type": "uint256",
+                "internalType": "uint256"
             }
         ],
-        "name": "AccessControlUnauthorizedAccount",
-        "type": "error"
+        "stateMutability": "nonpayable"
     },
     {
-        "inputs": [],
-        "name": "ReentrancyGuardReentrantCall",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "token",
-                "type": "address"
-            }
-        ],
-        "name": "SafeERC20FailedOperation",
-        "type": "error"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "previousOwner",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "newOwner",
-                "type": "address"
-            }
-        ],
-        "name": "OwnershipTransferred",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "paymentName",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "priceFetchContract",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "paymentTokenAddress",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "decimal",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "status",
-                        "type": "bool"
-                    }
-                ],
-                "indexed": false,
-                "internalType": "struct StoneForm_ICO.tokenDetail",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "name": "PaymentTokenDetails",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "role",
-                "type": "bytes32"
-            },
-            {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "previousAdminRole",
-                "type": "bytes32"
-            },
-            {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "newAdminRole",
-                "type": "bytes32"
-            }
-        ],
-        "name": "RoleAdminChanged",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "role",
-                "type": "bytes32"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "sender",
-                "type": "address"
-            }
-        ],
-        "name": "RoleGranted",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "role",
-                "type": "bytes32"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "sender",
-                "type": "address"
-            }
-        ],
-        "name": "RoleRevoked",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "previousSigner",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "newSigner",
-                "type": "address"
-            }
-        ],
-        "name": "SignerAddressUpdated",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "tokenAddress",
-                "type": "address"
-            }
-        ],
-        "name": "TokenAddressUpdated",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "TokenBuyed",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "TokenPerUSDPriceUpdated",
-        "type": "event"
-    },
-    {
-        "inputs": [],
+        "type": "function",
         "name": "ADMIN_ROLE",
+        "inputs": [],
         "outputs": [
             {
-                "internalType": "bytes32",
                 "name": "",
-                "type": "bytes32"
+                "type": "bytes32",
+                "internalType": "bytes32"
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        "stateMutability": "view"
     },
     {
-        "inputs": [],
+        "type": "function",
         "name": "DEFAULT_ADMIN_ROLE",
+        "inputs": [],
         "outputs": [
             {
-                "internalType": "bytes32",
                 "name": "",
-                "type": "bytes32"
+                "type": "bytes32",
+                "internalType": "bytes32"
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        "stateMutability": "view"
     },
     {
-        "inputs": [],
+        "type": "function",
         "name": "SIGNER_ROLE",
+        "inputs": [],
         "outputs": [
             {
-                "internalType": "bytes32",
                 "name": "",
-                "type": "bytes32"
+                "type": "bytes32",
+                "internalType": "bytes32"
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        "stateMutability": "view"
     },
     {
+        "type": "function",
+        "name": "acceptAdminRole",
+        "inputs": [],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "buy",
         "inputs": [
             {
-                "internalType": "address",
                 "name": "recipient",
-                "type": "address"
+                "type": "address",
+                "internalType": "address"
             },
             {
-                "internalType": "uint256",
                 "name": "paymentType",
-                "type": "uint256"
+                "type": "uint256",
+                "internalType": "uint256"
             },
             {
-                "internalType": "uint256",
-                "name": "tokenAmount",
-                "type": "uint256"
+                "name": "amountPaid",
+                "type": "uint256",
+                "internalType": "uint256"
             },
             {
+                "name": "sig",
+                "type": "tuple",
+                "internalType": "struct StoneForm_ICO_V2.Sign",
                 "components": [
                     {
-                        "internalType": "uint8",
                         "name": "v",
-                        "type": "uint8"
+                        "type": "uint8",
+                        "internalType": "uint8"
                     },
                     {
-                        "internalType": "bytes32",
                         "name": "r",
-                        "type": "bytes32"
+                        "type": "bytes32",
+                        "internalType": "bytes32"
                     },
                     {
-                        "internalType": "bytes32",
                         "name": "s",
-                        "type": "bytes32"
+                        "type": "bytes32",
+                        "internalType": "bytes32"
                     },
                     {
-                        "internalType": "uint256",
                         "name": "nonce",
-                        "type": "uint256"
+                        "type": "uint256",
+                        "internalType": "uint256"
                     }
-                ],
-                "internalType": "struct StoneForm_ICO.Sign",
-                "name": "sign",
-                "type": "tuple"
+                ]
             }
         ],
-        "name": "buyToken",
         "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
+        "stateMutability": "payable"
     },
     {
+        "type": "function",
+        "name": "emergencyWithdraw",
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "paymentType",
-                "type": "uint256"
-            }
-        ],
-        "name": "getLatestPrice",
-        "outputs": [
-            {
-                "internalType": "int256",
-                "name": "",
-                "type": "int256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "bytes32",
-                "name": "role",
-                "type": "bytes32"
-            }
-        ],
-        "name": "getRoleAdmin",
-        "outputs": [
-            {
-                "internalType": "bytes32",
-                "name": "",
-                "type": "bytes32"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "paymentType",
-                "type": "uint256"
+                "name": "token",
+                "type": "address",
+                "internalType": "address"
             },
             {
-                "internalType": "uint256",
-                "name": "tokenAmount",
-                "type": "uint256"
-            }
-        ],
-        "name": "getToken",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "data",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "bytes32",
-                "name": "role",
-                "type": "bytes32"
+                "name": "to",
+                "type": "address",
+                "internalType": "address"
             },
             {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "bytes32",
-                "name": "role",
-                "type": "bytes32"
-            },
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            }
-        ],
-        "name": "hasRole",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "paymentDetails",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "paymentName",
-                "type": "string"
-            },
-            {
-                "internalType": "address",
-                "name": "priceFetchContract",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "paymentTokenAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "decimal",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bool",
-                "name": "status",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "walletAddress",
-                "type": "address"
-            }
-        ],
-        "name": "recoverBNB",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_tokenAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "walletAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
                 "name": "amount",
-                "type": "uint256"
+                "type": "uint256",
+                "internalType": "uint256"
             }
         ],
-        "name": "recoverToken",
         "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        "stateMutability": "nonpayable"
     },
     {
+        "type": "function",
+        "name": "getRoleAdmin",
         "inputs": [
             {
-                "internalType": "bytes32",
                 "name": "role",
-                "type": "bytes32"
-            },
-            {
-                "internalType": "address",
-                "name": "callerConfirmation",
-                "type": "address"
+                "type": "bytes32",
+                "internalType": "bytes32"
             }
         ],
-        "name": "renounceRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        "outputs": [
+            {
+                "name": "",
+                "type": "bytes32",
+                "internalType": "bytes32"
+            }
+        ],
+        "stateMutability": "view"
     },
     {
+        "type": "function",
+        "name": "grantRole",
         "inputs": [
             {
-                "internalType": "bytes32",
                 "name": "role",
-                "type": "bytes32"
+                "type": "bytes32",
+                "internalType": "bytes32"
             },
             {
-                "internalType": "address",
                 "name": "account",
-                "type": "address"
+                "type": "address",
+                "internalType": "address"
             }
         ],
-        "name": "revokeRole",
         "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        "stateMutability": "nonpayable"
     },
     {
+        "type": "function",
+        "name": "hasRole",
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "paymentType",
-                "type": "uint256"
+                "name": "role",
+                "type": "bytes32",
+                "internalType": "bytes32"
             },
             {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "paymentName",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "priceFetchContract",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "paymentTokenAddress",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "decimal",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "status",
-                        "type": "bool"
-                    }
-                ],
-                "internalType": "struct StoneForm_ICO.tokenDetail",
-                "name": "_tokenDetails",
-                "type": "tuple"
+                "name": "account",
+                "type": "address",
+                "internalType": "address"
             }
         ],
-        "name": "setPaymentTokenDetails",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "signerAddress",
-                "type": "address"
-            }
-        ],
-        "name": "setSignerAddress",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_tokenAddress",
-                "type": "address"
-            }
-        ],
-        "name": "setTokenAddress",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "tokenAmount",
-                "type": "uint256"
-            }
-        ],
-        "name": "setTokenPricePerUSD",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "signer",
         "outputs": [
             {
-                "internalType": "address",
                 "name": "",
-                "type": "address"
+                "type": "bool",
+                "internalType": "bool"
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        "stateMutability": "view"
     },
     {
+        "type": "function",
+        "name": "initiateAdminTransfer",
         "inputs": [
             {
-                "internalType": "bytes4",
-                "name": "interfaceId",
-                "type": "bytes4"
+                "name": "newAdmin",
+                "type": "address",
+                "internalType": "address"
             }
         ],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "pause",
+        "inputs": [],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "paused",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "paymentTokens",
+        "inputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "name",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "oracle",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "token",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "decimals",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "enabled",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "pendingAdmin",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "renounceRole",
+        "inputs": [
+            {
+                "name": "role",
+                "type": "bytes32",
+                "internalType": "bytes32"
+            },
+            {
+                "name": "callerConfirmation",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "revokeRole",
+        "inputs": [
+            {
+                "name": "role",
+                "type": "bytes32",
+                "internalType": "bytes32"
+            },
+            {
+                "name": "account",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "saleToken",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "address",
+                "internalType": "contract IERC20"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "setPaymentToken",
+        "inputs": [
+            {
+                "name": "id",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "name",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "oracle",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "token",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "decimals",
+                "type": "uint256",
+                "internalType": "uint256"
+            },
+            {
+                "name": "enabled",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
         "name": "supportsInterface",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "tokenAddress",
-        "outputs": [
-            {
-                "internalType": "contract IERC20",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "tokenAmountPerUSD",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "newOwner",
-                "type": "address"
+                "name": "interfaceId",
+                "type": "bytes4",
+                "internalType": "bytes4"
             }
         ],
-        "name": "transferOwnership",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "tokenPerUSD",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "unpause",
+        "inputs": [],
         "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "updateSaleToken",
+        "inputs": [
+            {
+                "name": "newSaleToken",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "updateSigner",
+        "inputs": [
+            {
+                "name": "newSigner",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "updateTokenPerUSD",
+        "inputs": [
+            {
+                "name": "newPrice",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "usedNonce",
+        "inputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "event",
+        "name": "AdminTransferCompleted",
+        "inputs": [
+            {
+                "name": "newAdmin",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "AdminTransferStarted",
+        "inputs": [
+            {
+                "name": "oldAdmin",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            },
+            {
+                "name": "newAdmin",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "EmergencyWithdraw",
+        "inputs": [
+            {
+                "name": "token",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            },
+            {
+                "name": "amount",
+                "type": "uint256",
+                "indexed": false,
+                "internalType": "uint256"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "Paused",
+        "inputs": [
+            {
+                "name": "account",
+                "type": "address",
+                "indexed": false,
+                "internalType": "address"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "PaymentTokenUpdated",
+        "inputs": [
+            {
+                "name": "id",
+                "type": "uint256",
+                "indexed": true,
+                "internalType": "uint256"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "RoleAdminChanged",
+        "inputs": [
+            {
+                "name": "role",
+                "type": "bytes32",
+                "indexed": true,
+                "internalType": "bytes32"
+            },
+            {
+                "name": "previousAdminRole",
+                "type": "bytes32",
+                "indexed": true,
+                "internalType": "bytes32"
+            },
+            {
+                "name": "newAdminRole",
+                "type": "bytes32",
+                "indexed": true,
+                "internalType": "bytes32"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "RoleGranted",
+        "inputs": [
+            {
+                "name": "role",
+                "type": "bytes32",
+                "indexed": true,
+                "internalType": "bytes32"
+            },
+            {
+                "name": "account",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            },
+            {
+                "name": "sender",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "RoleRevoked",
+        "inputs": [
+            {
+                "name": "role",
+                "type": "bytes32",
+                "indexed": true,
+                "internalType": "bytes32"
+            },
+            {
+                "name": "account",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            },
+            {
+                "name": "sender",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "SaleTokenUpdated",
+        "inputs": [
+            {
+                "name": "token",
+                "type": "address",
+                "indexed": false,
+                "internalType": "address"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "SignerUpdated",
+        "inputs": [
+            {
+                "name": "signer",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "TokenPerUSDUpdated",
+        "inputs": [
+            {
+                "name": "newPrice",
+                "type": "uint256",
+                "indexed": false,
+                "internalType": "uint256"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "TokensPurchased",
+        "inputs": [
+            {
+                "name": "buyer",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            },
+            {
+                "name": "recipient",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            },
+            {
+                "name": "amount",
+                "type": "uint256",
+                "indexed": false,
+                "internalType": "uint256"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "Unpaused",
+        "inputs": [
+            {
+                "name": "account",
+                "type": "address",
+                "indexed": false,
+                "internalType": "address"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "error",
+        "name": "AccessControlBadConfirmation",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "AccessControlUnauthorizedAccount",
+        "inputs": [
+            {
+                "name": "account",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "neededRole",
+                "type": "bytes32",
+                "internalType": "bytes32"
+            }
+        ]
+    },
+    {
+        "type": "error",
+        "name": "ECDSAInvalidSignature",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "ECDSAInvalidSignatureLength",
+        "inputs": [
+            {
+                "name": "length",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ]
+    },
+    {
+        "type": "error",
+        "name": "ECDSAInvalidSignatureS",
+        "inputs": [
+            {
+                "name": "s",
+                "type": "bytes32",
+                "internalType": "bytes32"
+            }
+        ]
+    },
+    {
+        "type": "error",
+        "name": "EnforcedPause",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "ExpectedPause",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "ReentrancyGuardReentrantCall",
+        "inputs": []
+    },
+    {
+        "type": "error",
+        "name": "SafeERC20FailedOperation",
+        "inputs": [
+            {
+                "name": "token",
+                "type": "address",
+                "internalType": "address"
+            }
+        ]
     }
 ]
