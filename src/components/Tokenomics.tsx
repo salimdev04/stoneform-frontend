@@ -44,7 +44,7 @@ const Tokenomics = () => {
                         <span className="text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]">Tokenomics</span>
                     </h2>
                     <p className="text-lg text-gray-400 max-w-2xl mx-auto font-light">
-                        A compliant, asset-backed economic model designed to support long-term growth, transparency, and investor participation.
+                       A regulated, asset-backed token model designed to align investors with real-world real estate performance.
                     </p>
                 </div>
 
@@ -190,7 +190,7 @@ const Tokenomics = () => {
                                         <Globe className="w-4 h-4" />
                                         <span className="text-xs font-medium uppercase tracking-wider">Network</span>
                                     </div>
-                                    <p className="font-bold text-white text-lg">BSC (BSC-20)</p>
+                                    <p className="font-bold text-white text-lg">Binance Smart Chain</p>
                                 </div>
                                 <div className="p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group">
                                     <div className="flex items-center gap-2 mb-2 text-gray-400 group-hover:text-stone-cyan transition-colors">
@@ -244,12 +244,12 @@ const Tokenomics = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
                         {[
-                            { icon: Building, text: "Fractional Real Estate Exposure", sub: "Gain fractional exposure to tokenized real estate assets." },
-                            { icon: Coins, text: "Revenue Distribution", sub: "Receive on-chain revenue distributions from rental income." },
-                            { icon: Users, text: "Governance Rights", sub: "Participate in platform governance through voting rights." },
-                            { icon: Lock, text: "Staking Rewards", sub: "Stake tokens for additional rewards and ecosystem incentives." },
-                            { icon: Star, text: "Priority Access", sub: "Access priority investment opportunities and benefits." },
-                            { icon: Shield, text: "Portfolio Transparency", sub: "Track asset performance and revenue flows through transparent on-chain reporting." }
+                            { icon: Building, text: "Fractional Real Estate Exposure", sub: "Represents fractional exposure to tokenized real estate assets held within the STONEFORM ecosystem." },
+                            { icon: Coins, text: "Revenue Distribution", sub: "Eligible STOF holders may receive on-chain revenue distributions from rental income and asset sales, where compliant." },
+                            { icon: Users, text: "Governance Rights", sub: "Participate in governance decisions related to property acquisitions, asset management, and platform policies." },
+                            { icon: Lock, text: "Staking Rewards", sub: "Stake STOF to access tiered platform features and long-term ecosystem incentives." },
+                            { icon: Star, text: "Priority Access", sub: "Access priority participation opportunities in selected tokenized real estate projects." },
+                            { icon: Shield, text: "Portfolio Transparency", sub: "Track asset performance, portfolio data, and revenue flows through transparent on-chain reporting." }
                         ].map((item, i) => (
                             <div key={i} className="group/item flex flex-col gap-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-stone-cyan/30 transition-all duration-300">
                                 <div className="w-10 h-10 rounded-lg bg-stone-dark/50 flex items-center justify-center group-hover/item:scale-110 transition-transform duration-300">
@@ -277,9 +277,9 @@ const Tokenomics = () => {
                         </div>
                         <ul className="space-y-4">
                             {[
-                                { label: "5 Phases", desc: "Foundation, Seed, Private, Pre-Public, Public." },
-                                { label: "Pricing", desc: "Phase-based pricing with gradual increases." },
-                                { label: "Release", desc: "Controlled token release aligned with milestones." }
+                                { label: "5 Phases", desc: "Foundation, Seed, Pre-Public, Public, and Pre-Listing phases." },
+                                { label: "Pricing", desc: "Phase-based pricing with predefined valuation increases." },
+                                { label: "Release", desc: "Controlled token release governed by predefined vesting schedules." }
                             ].map((item, i) => (
                                 <li key={i} className="flex items-start gap-3">
                                     <div className="w-6 h-6 rounded-full bg-stone-purple/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -304,9 +304,9 @@ const Tokenomics = () => {
                         </div>
                         <ul className="space-y-4">
                             {[
-                                { label: "Team", desc: "0% at TGE, 18-month linear vesting." },
-                                { label: "Public Sale", desc: "Partial unlock at TGE, linear release thereafter." },
-                                { label: "Reserve", desc: "Progressive release over 18 months for growth." }
+                                { label: "Team", desc: "0% at TGE, followed by an 18-month linear vesting schedule." },
+                                { label: "Public Sale", desc: "Partial unlock after defined lock-up periods, followed by linear release schedules." },
+                                { label: "Reserve", desc: "Progressive release over 18 months to support acquisitions, staking incentives, and ecosystem growth." }
                             ].map((item, i) => (
                                 <li key={i} className="flex items-start gap-3">
                                     <div className="w-6 h-6 rounded-full bg-stone-cyan/20 flex items-center justify-center shrink-0 mt-0.5">
@@ -331,9 +331,9 @@ const Tokenomics = () => {
                         </div>
                         <ul className="space-y-4">
                             {[
-                                "Backed by real-world income-generating assets.",
-                                "Prevents speculation through strict vesting.",
-                                "Aligns investors with long-term ecosystem growth."
+                                "Backed by real-world, income-generating real estate assets.",
+                                "Reduces speculative behavior through strict vesting and controlled token releases.",
+                                "Aligns investors with long-term real estate performance and ecosystem growth."
                             ].map((text, i) => (
                                 <li key={i} className="flex items-start gap-3">
                                     <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
