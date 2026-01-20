@@ -461,7 +461,13 @@ const Invest = () => {
             <section className="max-w-7xl mx-auto px-4 md:px-8 pb-12 opacity-50 hover:opacity-100 transition-opacity duration-300">
                 <div className="border-t border-white/10 pt-8">
                     <p className="text-[10px] md:text-xs text-gray-500 text-justify leading-relaxed font-light">
-                        The STONEFORM Token (STOF) is a blockchain-based token designed to provide participation in the STONEFORM ecosystem, including fractional exposure to tokenized real estate assets and platform governance rights, subject to applicable terms and regulatory requirements. STOF does not represent equity, ownership, or shares in STONEFORM or any affiliated entity, nor does it guarantee profits, returns, or capital preservation. Participation in the STOF token sale and holding STOF involves significant risks, including market volatility, regulatory uncertainty, liquidity limitations, and potential technical or smart contract failures. The availability and transferability of STOF may be restricted in certain jurisdictions, and all participants are responsible for ensuring compliance with applicable local laws and regulations. Nothing in this communication constitutes legal, financial, tax, or investment advice, and all forward-looking statements are subject to change without notice.
+                      The STONEFORM Token (STOF) is a blockchain-based security token designed to enable participation in the STONEFORM ecosystem, including fractional exposure to tokenized real estate assets and limited governance rights related to platform operations and asset management, subject to applicable terms and regulatory requirements.
+
+STOF does not represent direct equity ownership or traditional shares in STONEFORM or any affiliated entity. Rights associated with STOF are contractual and token-based, as defined in the project documentation and applicable legal framework, and do not guarantee profits, returns, or capital preservation.
+
+Participation in the STOF token sale and holding STOF involves significant risks, including market volatility, regulatory uncertainty, liquidity limitations, and potential technical or smart contract failures. The availability, transferability, and usability of STOF may be restricted in certain jurisdictions, and all participants are responsible for ensuring compliance with applicable local laws and regulations.
+
+Nothing in this communication constitutes legal, financial, tax, or investment advice. All forward-looking statements are subject to change without notice.
                     </p>
                 </div>
             </section>

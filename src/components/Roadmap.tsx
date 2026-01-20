@@ -7,9 +7,9 @@ const steps = [
         icon: <Rocket className="w-6 h-6 md:w-8 md:h-8 text-white" />,
         phase: "Phase 1",
         time: "Q1 - Q2 2026",
-        title: "Foundation & ICO Launch",
-        description: "Launch STOF ICO (presale and public sale). Complete initial fundraising targets. Establish core legal, compliance, and governance frameworks. Finalize smart contract architecture and security audits. Begin onboarding strategic advisors and early partners.",
-        color: "bg-[#00c6ff]", // Light Blue
+        title: "Foundation & Token Sale Launch",
+        description: "Launch STOF token sale (presale and public sale). Complete initial fundraising milestones. Establish core legal, regulatory compliance, and governance frameworks. Finalize smart contract architecture and complete independent security audits. Begin onboarding strategic advisors and early ecosystem partners.",
+        color: "bg-[#00c6ff]",
         glow: "shadow-[#00c6ff]/50",
         status: "current"
     },
@@ -17,9 +17,9 @@ const steps = [
         icon: <Target className="w-6 h-6 md:w-8 md:h-8 text-white" />,
         phase: "Phase 2",
         time: "Q3 - Q4 2026",
-        title: "Team Expansion & Partnerships",
-        description: "Expand internal team (real estate, blockchain, legal). Secure partnerships with property developers and ESG-certified builders. Strengthen compliance operations across key jurisdictions. Prepare pipeline for initial real estate acquisitions.",
-        color: "bg-[#5832FF]", // Purple/Blue
+        title: "Team Expansion & Strategic Partnerships",
+        description: "Expand internal teams across real estate, blockchain engineering, and legal compliance. Secure partnerships with property developers and ESG-aligned builders. Strengthen regulatory compliance operations across key jurisdictions. Prepare acquisition pipeline for initial real estate assets.",
+        color: "bg-[#5832FF]",
         glow: "shadow-[#5832FF]/50",
         status: "upcoming"
     },
@@ -27,9 +27,9 @@ const steps = [
         icon: <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-white" />,
         phase: "Phase 3",
         time: "Q1 - Q2 2027",
-        title: "First Project Launch",
-        description: "Secure permits and land rights for the inaugural residential project (e.g., London or Dubai). Initiate construction or acquisition process. Continue platform technical development. Prepare investor reporting and portfolio tracking infrastructure.",
-        color: "bg-[#d946ef]", // Pink/Magenta
+        title: "First Asset Acquisition & Project Launch",
+        description: "Secure permits and land or asset rights for inaugural residential projects (target markets may include London or Dubai). Initiate acquisition or development processes. Continue platform technical development. Deploy investor reporting, compliance monitoring, and portfolio transparency infrastructure.",
+        color: "bg-[#d946ef]",
         glow: "shadow-[#d946ef]/50",
         status: "upcoming"
     },
@@ -37,9 +37,9 @@ const steps = [
         icon: <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-white" />,
         phase: "Phase 4",
         time: "Q3 2027 – Q1 2028",
-        title: "Scaling & DeFi Integration",
-        description: "Launch STOF staking mechanisms for early backers. Finalize DAO-based governance framework. Integrate DeFi functionalities (e.g. STOF-backed mechanisms). Deploy mobile application for portfolio monitoring. Begin acquisition of additional prime residential sites.",
-        color: "bg-[#f43f5e]", // Red/Pink
+        title: "Platform Scaling & On-Chain Integration",
+        description: "Introduce STOF participation and incentive mechanisms for long-term token holders. Implement structured on-chain governance features aligned with regulatory requirements. Integrate approved DeFi-compatible infrastructure where permitted. Deploy mobile application for portfolio monitoring and reporting. Begin acquisition of additional prime residential assets.",
+        color: "bg-[#f43f5e]",
         glow: "shadow-[#f43f5e]/50",
         status: "upcoming"
     },
@@ -47,9 +47,9 @@ const steps = [
         icon: <Award className="w-6 h-6 md:w-8 md:h-8 text-white" />,
         phase: "Phase 5",
         time: "Q1 2028 – Q4 2028",
-        title: "Income Generation & Global Expansion",
-        description: "Achieve high occupancy for completed projects. Initiate quarterly dividend distributions to STOF holders. Expand into new global markets (Asia, Europe). Establish local property management partnerships. Generate consistent rental income across portfolio.",
-        color: "bg-[#f59e0b]", // Amber/Orange
+        title: "Revenue Generation & Global Expansion",
+        description: "Achieve stabilized occupancy across completed projects. Initiate periodic on-chain revenue distributions to eligible STOF holders in accordance with applicable regulations. Expand operations into additional global markets (including Asia and Europe). Establish local property and asset management partnerships. Generate recurring income across the real estate portfolio.",
+        color: "bg-[#f59e0b]",
         glow: "shadow-[#f59e0b]/50",
         status: "upcoming"
     },
@@ -58,8 +58,8 @@ const steps = [
         phase: "Phase 6",
         time: "2029 – 2030",
         title: "Diversification & Ecosystem Maturity",
-        description: "Expand into commercial real estate and hospitality assets. Launch tokenized hospitality and mixed-use projects. Scale portfolio across 10+ countries. Introduce enhanced STOF governance features (v2.0). Position STONEFORM as a global leader in tokenized real estate investment.",
-        color: "bg-[#10b981]", // Emerald
+        description: "Expand into commercial real estate, hospitality, and mixed-use assets. Launch tokenized hospitality and diversified property projects. Scale portfolio across 10+ jurisdictions, subject to regulatory approval. Introduce enhanced STOF governance features (v2.0). Position STONEFORM as a globally recognized platform for compliant tokenized real estate investment.",
+        color: "bg-[#10b981]",
         glow: "shadow-[#10b981]/50",
         status: "upcoming"
     }

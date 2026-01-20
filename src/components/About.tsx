@@ -21,7 +21,7 @@ const About = () => {
                         <span className="text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]">About Us</span>
                     </h2>
                     <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
-                        Reinventing real estate investment through blockchain, transparency, and global accessibility.
+                        Reinventing real estate investment through blockchain technology, transparency, and regulated global accessibility.
                     </p>
                 </div>
 
@@ -37,7 +37,7 @@ const About = () => {
                             <h3 className="text-2xl md:text-3xl font-bold">Our Vision</h3>
                         </div>
                         <p className="text-gray-300 text-lg leading-relaxed font-light">
-                            At <span className="text-white font-semibold">STONEFORM</span>, we are building a new generation of real estate investment infrastructure by combining institutional-grade property expertise with blockchain technology. Our mission is to make premium real estate accessible to a global audience through <span className="text-stone-cyan">fractional ownership</span>, <span className="text-stone-cyan">tokenization</span>, and <span className="text-stone-cyan">sustainable growth</span> automated smart-contract governance.
+                            At <span className="text-white font-semibold">STONEFORM</span>, we are building a new generation of real estate investment infrastructure by combining institutional-grade property expertise with blockchain technology. Our mission is to make premium real estate accessible to a global audience through <span className="text-stone-cyan">fractional exposure to tokenized real estate assets</span>, <span className="text-stone-cyan">transparent on-chain infrastructure</span>, and <span className="text-stone-cyan">sustainable, long-term growth</span> supported by smart-contract–enabled governance mechanisms.
                         </p>
                     </div>
 
@@ -49,7 +49,7 @@ const About = () => {
                         <div>
                             <h4 className="text-xl font-bold mb-2">Secure & Compliant</h4>
                             <p className="text-sm text-gray-400 leading-relaxed">
-                                STONEFORM operates within a robust legal and regulatory framework, integrating KYC/AML procedures, jurisdiction-specific compliance checks, and smart-contract-based enforcement.
+                                STONEFORM operates within a robust legal and regulatory framework, integrating KYC/AML procedures, jurisdiction-specific compliance requirements, and smart-contract-based enforcement to ensure transparency, security, and regulatory alignment.
                             </p>
                         </div>
                     </div>
@@ -62,7 +62,7 @@ const About = () => {
                         <div>
                             <h4 className="text-xl font-bold mb-2">Community Driven</h4>
                             <p className="text-sm text-gray-400 leading-relaxed">
-                                Governance at STONEFORM is community-oriented and transparent. STOF token holders participate in key platform decisions, including property acquisitions, asset management strategies, and ecosystem evolution.
+                                Governance at STONEFORM is designed to be transparent and participatory. Eligible STOF token holders may participate in defined platform governance processes, including advisory input on asset strategy, platform development priorities, and ecosystem evolution, subject to applicable legal and regulatory constraints.
                             </p>
                         </div>
                     </div>
