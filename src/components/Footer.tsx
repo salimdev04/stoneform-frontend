@@ -10,7 +10,7 @@ const Footer = () => {
                         Legal & Disclaimers
                     </Link>
                     <span className="hidden md:inline">|</span>
-                    <Link href="/WhitepaperV4.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                    <Link href="/WhitepaperV5.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                         Whitepaper
                     </Link>
                 </div>

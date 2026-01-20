@@ -13,7 +13,7 @@ const DappNavbar = () => {
     const navLinks = [
         { name: 'Dashboard', href: '/dashboard' },
         { name: 'Invest Now', href: '/invest' },
-        { name: "Whitepaper", href: "/WhitepaperV4.pdf" },
+        { name: "Whitepaper", href: "/WhitepaperV5.pdf" },
         { name: 'Contact', href: 'mailto:contact@stoneform.io' }, // Assuming contact is mailto or a page, user didn't specify page
     ];
 

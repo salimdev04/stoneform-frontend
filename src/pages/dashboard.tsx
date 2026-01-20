@@ -16,6 +16,7 @@ const Dashboard: NextPage = () => {
             <Head>
                 <title>StoneForm Dashboard</title>
                 <meta name="description" content="Manage your StoneForm investments" />
+        <link href="/StoneformLogo.png" rel="icon" />
             </Head>
 
             {/* <Navbar /> */}

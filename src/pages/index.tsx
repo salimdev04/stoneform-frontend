@@ -6,6 +6,7 @@ import Hero from '../components/Hero';
 import About from '../components/About';
 import Roadmap from '../components/Roadmap';
 import Tokenomics from '../components/Tokenomics';
+import Partners from '../components/Partners';
 import FAQ from '../components/FAQ';
 import Footer from '../components/Footer';
 
@@ -27,6 +28,7 @@ const Home: NextPage = () => {
         <About />
         <Roadmap />
         <Tokenomics />
+        <Partners />
         <FAQ />
         <Footer />
       </main>
