@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Building2, Globe2, Landmark, Shield, Megaphone } from 'lucide-react';
+import { Building2, Globe2, Landmark, Shield, Megaphone, Newspaper } from 'lucide-react';
 
 const Partners = () => {
     const partnerCategories = [
@@ -49,6 +49,21 @@ const Partners = () => {
             partners: [
                 { name: "IBC", logo: "/parteners/ibc.png", width: 180, height: 60 },
             ]
+        },
+        {
+            title: "As Seen On",
+            icon: Newspaper,
+            color: "stone-purple",
+            partners: [
+                { name: "MarketWatch", logo: "/parteners/marketwatch.webp", width: 180, height: 60 },
+                { name: "Seeking Alpha", logo: "/parteners/seeking-alpha.png", width: 180, height: 60 },
+                { name: "Yahoo Finance", logo: "/parteners/yahoo-finance.webp", width: 180, height: 60 },
+                { name: "New York Post", logo: "/parteners/new-york-post.png", width: 180, height: 60 },
+                { name: "PR Newswire", logo: "/parteners/pr-newswire.jpg", width: 180, height: 60 },
+                { name: "FOX8", logo: "/parteners/fox8.png", width: 180, height: 60 },
+                { name: "Benzinga", logo: "/parteners/Benzinga.jpg", width: 180, height: 60 },
+                { name: "CBN", logo: "/parteners/CBN.svg", width: 180, height: 60 },
+            ]
         }
     ];
 
@@ -91,7 +106,7 @@ const Partners = () => {
                                                 alt={partner.name}
                                                 width={partner.width}
                                                 height={partner.height}
-                                                className="object-contain max-w-full max-h-full transition-all duration-300 opacity-70 group-hover:opacity-100"
+                                                className="object-contain max-w-full max-h-full transition-all duration-300 group-hover:opacity-100"
                                             />
                                         </div>
                                     </div>
