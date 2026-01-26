@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import Link from 'next/link'; // Added import
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import type { GetServerSideProps } from 'next';
 // import Navbar from '../components/Navbar'; // Removed/Kept existing comment if needed, but logic replaces it
 import Footer from '../components/Footer';
 import { ArrowLeft, Wallet, AlertCircle, Check, Copy, ExternalLink, RefreshCw, X, Settings, ArrowDown, ChevronDown, History as HistoryIcon, ArrowRight } from 'lucide-react';
@@ -16,10 +18,35 @@ import { generateSignature } from '../utils/signer';
 import { toast } from 'react-hot-toast';
 import StatusModal from '../components/StatusModal';
 
+const INVEST_UNLOCK_AT_UTC_MS = Date.UTC(2026, 0, 27, 15, 0, 0);
+
+const isInvestUnlocked = (now: Date) => {
+    return now.getTime() >= INVEST_UNLOCK_AT_UTC_MS;
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+    if (!isInvestUnlocked(new Date())) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        };
+    }
+
+    return { props: {} };
+};
 
 const Invest = () => {
+    const router = useRouter();
     const { address, isConnected, chain } = useAccount();
     const { switchChain } = useSwitchChain();
+
+    useEffect(() => {
+        if (!isInvestUnlocked(new Date())) {
+            router.replace('/');
+        }
+    }, [router]);
 
     // Enforce BSC Chain
     useEffect(() => {
