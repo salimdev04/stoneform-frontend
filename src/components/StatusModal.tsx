@@ -65,7 +65,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
 
     return (
         <div
-            className={`fixed inset-0 z-[100] flex items-center justify-center px-4 min-h-screen transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+            className={`fixed inset-0 z-[100] flex items-center justify-center px-4 transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
         >
             {/* Backdrop */}
             <div

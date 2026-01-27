@@ -4,42 +4,18 @@ import Image from "next/image";
 import Button from "./Button";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import StatusModal from "./StatusModal";
-
-const INVEST_UNLOCK_AT_UTC_MS = Date.UTC(2026, 0, 27, 15, 0, 0);
 
 export default function Hero() {
     const pathname = usePathname();
     const router = useRouter();
     const isDashboard = pathname === "/invest";
 
-    const [isInvestLockedModalOpen, setIsInvestLockedModalOpen] = useState(false);
-
-    const isInvestUnlocked = useMemo(() => {
-        return Date.now() >= INVEST_UNLOCK_AT_UTC_MS;
-    }, []);
-
     const handleInvestNow = () => {
-        if (!isInvestUnlocked) {
-            setIsInvestLockedModalOpen(true);
-            return;
-        }
-
         router.push("/invest");
     };
 
     return (
         <section className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden">
-            <StatusModal
-                isOpen={isInvestLockedModalOpen}
-                onClose={() => setIsInvestLockedModalOpen(false)}
-                status={null}
-                title="Invest opens soon"
-                message="Invest will be available on 27 Jan at 7:00 PM Dubai time."
-                actionLabel="Got it"
-                onAction={() => setIsInvestLockedModalOpen(false)}
-            />
             {/* Background */}
             {/* Background */}
             <div className="absolute inset-0 z-0">
