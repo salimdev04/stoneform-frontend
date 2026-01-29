@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 import { Target, TrendingUp, Info } from 'lucide-react';
 import { useStoneformICO } from '../../hooks/useStoneformICO';
-import { formatUnits } from 'viem';
-import { useBalance, useReadContracts } from 'wagmi';
+import { formatUnits, createPublicClient, http } from 'viem';
+import { bsc } from 'viem/chains';
+import { useReadContracts } from 'wagmi';
 import StoneformICOABI from '../../ABI/StoneformICO.json';
 
 const PresaleProgress: React.FC = () => {
@@ -10,57 +11,64 @@ const PresaleProgress: React.FC = () => {
     const { useGetTokenPerUSD, ICO_ADDRESS, useGetOraclePrice } = useStoneformICO();
     const { data: stofRate } = useGetTokenPerUSD();
 
-    // 1. Fetch Payment Token Details (to get addresses for USDT/USDC)
+    // 1. Fetch Payment Token Details (BNB only)
     const { data: paymentTokens } = useReadContracts({
         contracts: [
             { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'paymentTokens', args: [BigInt(0)] }, // BNB
-            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'paymentTokens', args: [BigInt(1)] }, // USDT
-            { address: ICO_ADDRESS, abi: StoneformICOABI, functionName: 'paymentTokens', args: [BigInt(2)] }, // USDC
         ]
     });
 
     // Access result safely
     const bnbDetails = paymentTokens?.[0]?.result as any;
-    const usdtDetails = paymentTokens?.[1]?.result as any;
-    const usdcDetails = paymentTokens?.[2]?.result as any;
-
     const bnbOracle = bnbDetails?.[1];
-    const usdtOracle = usdtDetails?.[1];
-    const usdcOracle = usdcDetails?.[1];
-
-    const usdtAddress = usdtDetails?.[2];
-    const usdcAddress = usdcDetails?.[2];
 
     const { data: bnbOracleData } = useGetOraclePrice(bnbOracle);
-    const { data: usdtOracleData } = useGetOraclePrice(usdtOracle);
-    const { data: usdcOracleData } = useGetOraclePrice(usdcOracle);
 
-    // 2. Fetch Prices
-    const prices = [
-        { result: bnbOracleData?.[1] || BigInt(93000000000) }, // BNB
-        { result: usdtOracleData?.[1] || BigInt(100000000) },  // USDT
-        { result: usdcOracleData?.[1] || BigInt(100000000) },  // USDC
-    ];
+    // 2. Fetch BNB Price
+    const bnbPrice = bnbOracleData?.[1] || BigInt(93000000000);
 
-    // 3. Fetch Contract Balances
-    const { data: bnbBalance } = useBalance({ address: ICO_ADDRESS });
-    const { data: usdtBalance } = useBalance({ address: ICO_ADDRESS, token: usdtAddress as `0x${string}`, query: { enabled: !!usdtAddress && usdtAddress !== '0x0000000000000000000000000000000000000000' } });
-    const { data: usdcBalance } = useBalance({ address: ICO_ADDRESS, token: usdcAddress as `0x${string}`, query: { enabled: !!usdcAddress && usdcAddress !== '0x0000000000000000000000000000000000000000' } });
+    // 3. Fetch BNB Balance
+    const [bnbBalance, setBnbBalance] = React.useState<bigint>(BigInt(0));
+    
+    React.useEffect(() => {
+        const fetchBnbBalance = async () => {
+            if (ICO_ADDRESS) {
+                try {
+                    const publicClient = createPublicClient({
+                        chain: bsc,
+                        transport: http()
+                    });
+                    
+                    const balance = await publicClient.getBalance({ address: ICO_ADDRESS });
+                    console.log('Contract BNB Balance:', balance, formatUnits(balance, 18), 'BNB');
+                    setBnbBalance(balance);
+                } catch (error) {
+                    console.error('Error fetching balance:', error);
+                }
+            }
+        };
+        fetchBnbBalance();
+        const interval = setInterval(fetchBnbBalance, 30000);
+        return () => clearInterval(interval);
+    }, [ICO_ADDRESS]);
 
-    // 4. Calculate Total Raised in USD
+    // 4. Calculate Total Raised in USD from BNB balance
     const totalRaised = useMemo(() => {
-        if (!prices || !bnbBalance) return 8_500_000; // Fallback to mock
-
-        const bnbPrice = Number(formatUnits((prices[0]?.result as bigint) || BigInt(0), 8));
-        const usdtPrice = Number(formatUnits((prices[1]?.result as bigint) || BigInt(0), 8));
-        const usdcPrice = Number(formatUnits((prices[2]?.result as bigint) || BigInt(0), 8));
-
-        const bnbValue = Number(bnbBalance.formatted) * bnbPrice;
-        const usdtValue = Number(usdtBalance?.formatted || 0) * usdtPrice;
-        const usdcValue = Number(usdcBalance?.formatted || 0) * usdcPrice;
-
-        return bnbValue + usdtValue + usdcValue;
-    }, [prices, bnbBalance, usdtBalance, usdcBalance]);
+        const bnbPriceUSD = Number(formatUnits(bnbPrice, 8));
+        const bnbBalanceFormatted = Number(formatUnits(bnbBalance, 18));
+        const totalUSD = bnbBalanceFormatted * bnbPriceUSD;
+        
+        console.log('Total Raised Calculation:', {
+            bnbBalanceRaw: bnbBalance.toString(),
+            bnbBalanceFormatted,
+            bnbPriceRaw: bnbPrice.toString(),
+            bnbPriceUSD,
+            totalUSD,
+            hasBalance: bnbBalance > BigInt(0)
+        });
+        
+        return totalUSD;
+    }, [bnbPrice, bnbBalance]);
 
     // Mock Data based on requirements (Not available on-chain)
     const currentStage = 1;
